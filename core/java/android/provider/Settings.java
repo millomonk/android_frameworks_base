@@ -2906,6 +2906,24 @@ public final class Settings {
         public static final String EXPANDED_RING_MODE = "expanded_ring_mode";
 
         /**
+         * Developer options - Navigation Bar show switch
+         * @hide
+         */
+        public static final String DEV_FORCE_SHOW_NAVBAR = "dev_force_show_navbar";
+
+        /**
+         * Developer options - Menu button enable override
+         * @hide
+         */
+        public static final String DEV_MENU_BUTTON_ENABLED = "menu_button_enabled";
+
+        /**
+         * Developer options - Back button enable override
+         * @hide
+         */
+        public static final String DEV_BACK_BUTTON_ENABLED = "back_button_enabled";
+
+        /**
          * HALO being minimal.
          * @hide
          */
