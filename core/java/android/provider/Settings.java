@@ -4277,6 +4277,13 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_COLOR = "status_bar_color";
+
+        /**
+         * How long to wait between playing notification sounds from a package
+         * Should be in milliseconds. 0 to disable
+         * @hide
+         */
+        public static final String MUTE_ANNOYING_NOTIFICATIONS_THRESHOLD = "mute_annoying_notifications_threshold";
     }
 
     /**
