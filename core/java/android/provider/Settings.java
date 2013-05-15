@@ -3747,6 +3747,12 @@ public final class Settings {
         public static final String NOTIFICATIONS_BEHAVIOUR = "notifications_behaviour"; 
 
         /**
+         * Always show settings button toggle
+         * @hide
+         */
+        public static final String NOTIFICATION_SETTINGS_BUTTON = "notification_settings_btn";
+
+        /**
          * @hide
          */
         public static final String KG_ALL_WIDGETS = "kg_all_widgets";

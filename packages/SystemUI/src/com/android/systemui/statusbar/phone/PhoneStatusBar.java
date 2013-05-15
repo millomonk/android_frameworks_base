@@ -245,7 +245,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     // top bar
     View mNotificationPanelHeader;
     View mClearButton;
-    ImageView mSettingsButton, mNotificationButton;
+    ImageView mSettingsButton, mQuickSettingsButton, mNotificationButton;
 
     // carrier/wifi label
     private TextView mCarrierLabel;
@@ -372,6 +372,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.NOTIFICATION_SETTINGS_BUTTON), false, this);
             update();
         }
 
@@ -389,6 +391,9 @@ public class PhoneStatusBar extends BaseStatusBar {
                     && Settings.System.getIntForUser(resolver,
                             Settings.System.STATUS_BAR_BRIGHTNESS_CONTROL,
                             0, UserHandle.USER_CURRENT) == 1;
+            boolean notificationSettingsBtn = Settings.System.getInt(
+                    resolver, Settings.System.NOTIFICATION_SETTINGS_BUTTON, 0) == 1;
+            mSettingsButton.setVisibility(notificationSettingsBtn ? View.VISIBLE : View.GONE);
             showClock(true); 
         }
     }
@@ -444,8 +449,8 @@ public class PhoneStatusBar extends BaseStatusBar {
             if (MULTIUSER_DEBUG) Slog.d(TAG, String.format("User setup changed: " +
                     "selfChange=%s userSetup=%s mUserSetup=%s",
                     selfChange, userSetup, mUserSetup));
-            if (mSettingsButton != null && mHasFlipSettings) {
-                mSettingsButton.setVisibility(userSetup ? View.VISIBLE : View.INVISIBLE);
+            if (mQuickSettingsButton != null && mHasFlipSettings) {
+                mQuickSettingsButton.setVisibility(userSetup ? View.VISIBLE : View.INVISIBLE);
             }
             if (mHaloButton != null && mHasFlipSettings) {
                 mHaloButtonVisible = userSetup;
@@ -641,13 +646,19 @@ public class PhoneStatusBar extends BaseStatusBar {
         mHasFlipSettings = res.getBoolean(R.bool.config_hasFlipSettingsPanel);
 
         mSettingsButton = (ImageView) mStatusBarWindow.findViewById(R.id.settings_button);
-        if (mSettingsButton != null) {
-            mSettingsButton.setOnClickListener(mSettingsButtonListener);
+        mSettingsButton.setOnClickListener(mSettingsButtonListener);
+
+        boolean notificationSettingsBtn = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.NOTIFICATION_SETTINGS_BUTTON, 0) == 1;
+
+        mQuickSettingsButton = (ImageView) mStatusBarWindow.findViewById(R.id.quicksettings_button);
+        if (mQuickSettingsButton != null) {
+            mQuickSettingsButton.setOnClickListener(mQuickSettingsButtonListener);
             if (mHasSettingsPanel) {
                 if (mStatusBarView.hasFullWidthNotifications()) {
                     // the settings panel is hiding behind this button
-                    mSettingsButton.setImageResource(R.drawable.ic_notify_quicksettings);
-                    mSettingsButton.setVisibility(View.VISIBLE);
+                    mQuickSettingsButton.setImageResource(R.drawable.ic_notify_quicksettings);
+                    mQuickSettingsButton.setVisibility(View.VISIBLE);
                 } else {
                     // there is a settings panel, but it's on the other side of the (large) screen
                     final View buttonHolder = mStatusBarWindow.findViewById(
@@ -656,11 +667,14 @@ public class PhoneStatusBar extends BaseStatusBar {
                         buttonHolder.setVisibility(View.GONE);
                     }
                 }
+                mSettingsButton.setVisibility(notificationSettingsBtn ? View.VISIBLE : View.GONE);
             } else {
                 // no settings panel, go straight to settings
-                mSettingsButton.setVisibility(View.VISIBLE);
-                mSettingsButton.setImageResource(R.drawable.ic_notify_settings);
+                mQuickSettingsButton.setVisibility(View.VISIBLE);
+                mQuickSettingsButton.setImageResource(R.drawable.ic_notify_settings);
+                mSettingsButton.setVisibility(View.GONE);
             }
+
         }
 
         mHaloButton = (ImageView) mStatusBarWindow.findViewById(R.id.halo_button);
@@ -679,6 +693,7 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         mScrollView = (ScrollView)mStatusBarWindow.findViewById(R.id.scroll);
         mScrollView.setVerticalScrollBarEnabled(false); // less drawing during pulldowns
+        mQuickSettingsButton.setOnLongClickListener(mSettingsLongClickListener);
         if (!mNotificationPanelIsFullScreenWidth) {
             mScrollView.setSystemUiVisibility(
                     View.STATUS_BAR_DISABLE_NOTIFICATION_TICKER |
@@ -1296,10 +1311,10 @@ public class PhoneStatusBar extends BaseStatusBar {
             ((ImageView)mClearButton).setImageResource(R.drawable.ic_notify_clear);
         }
 
-        if (mSettingsButton != null) {
+        if (mQuickSettingsButton != null) {
             // Force asset reloading
-            mSettingsButton.setImageDrawable(null);
-            mSettingsButton.setImageResource(R.drawable.ic_notify_quicksettings);
+            mQuickSettingsButton.setImageDrawable(null);
+            mQuickSettingsButton.setImageResource(R.drawable.ic_notify_quicksettings);
         }
 
         if (mNotificationButton != null) {
@@ -1354,8 +1369,8 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
         }
 
-        if (mSettingsButton != null) {
-            mSettingsButton.setEnabled(isDeviceProvisioned());
+        if (mQuickSettingsButton != null) {
+            mQuickSettingsButton.setEnabled(isDeviceProvisioned());
         }
         if (mHaloButton != null) {
             mHaloButton.setEnabled(isDeviceProvisioned());
@@ -1802,7 +1817,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     final int FLIP_DURATION = (FLIP_DURATION_IN + FLIP_DURATION_OUT);
 
     Animator mScrollViewAnim, mFlipSettingsViewAnim, mNotificationButtonAnim,
-        mSettingsButtonAnim, mHaloButtonAnim, mClearButtonAnim, mRibbonViewAnim;
+        mQuickSettingsButtonAnim, mHaloButtonAnim, mClearButtonAnim, mRibbonViewAnim;
 
     @Override
     public void animateExpandNotificationsPanel() {
@@ -1829,7 +1844,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
         if (mScrollViewAnim != null) mScrollViewAnim.cancel();
         if (mRibbonViewAnim != null) mRibbonViewAnim.cancel();
-        if (mSettingsButtonAnim != null) mSettingsButtonAnim.cancel();
+        if (mQuickSettingsButtonAnim != null) mQuickSettingsButtonAnim.cancel();
         if (mHaloButtonAnim != null) mHaloButtonAnim.cancel();
         if (mNotificationButtonAnim != null) mNotificationButtonAnim.cancel();
         if (mClearButtonAnim != null) mClearButtonAnim.cancel();
@@ -1870,9 +1885,9 @@ public class PhoneStatusBar extends BaseStatusBar {
                 ObjectAnimator.ofFloat(mNotificationButton, View.ALPHA, 0f)
                     .setDuration(FLIP_DURATION),
                 mNotificationButton, View.INVISIBLE));
-        mSettingsButton.setVisibility(View.VISIBLE);
-        mSettingsButtonAnim = start(
-            ObjectAnimator.ofFloat(mSettingsButton, View.ALPHA, 1f)
+        mQuickSettingsButton.setVisibility(View.VISIBLE);
+        mQuickSettingsButtonAnim = start(
+            ObjectAnimator.ofFloat(mQuickSettingsButton, View.ALPHA, 1f)
                 .setDuration(FLIP_DURATION));
         mHaloButtonVisible = true;
         updateHaloButton();
@@ -1924,7 +1939,7 @@ public class PhoneStatusBar extends BaseStatusBar {
 
         mFlipSettingsView.setScaleX(1f);
         mFlipSettingsView.setVisibility(View.VISIBLE);
-        mSettingsButton.setVisibility(View.GONE);
+        mQuickSettingsButton.setVisibility(View.GONE);
         mHaloButtonVisible = false;
         updateHaloButton();
         mScrollView.setVisibility(View.GONE);
@@ -1955,7 +1970,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     public void partialFlip(float progress) {
         if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
         if (mScrollViewAnim != null) mScrollViewAnim.cancel();
-        if (mSettingsButtonAnim != null) mSettingsButtonAnim.cancel();
+        if (mQuickSettingsButtonAnim != null) mQuickSettingsButtonAnim.cancel();
         if (mNotificationButtonAnim != null) mNotificationButtonAnim.cancel();
         if (mClearButtonAnim != null) mClearButtonAnim.cancel();
 
@@ -1963,8 +1978,8 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (progress < 0f) { // notifications side
             mFlipSettingsView.setScaleX(0f);
             mFlipSettingsView.setVisibility(View.GONE);
-            mSettingsButton.setVisibility(View.VISIBLE);
-            mSettingsButton.setAlpha(-progress);
+            mQuickSettingsButton.setVisibility(View.VISIBLE);
+            mQuickSettingsButton.setAlpha(-progress);
             mScrollView.setVisibility(View.VISIBLE);
             mScrollView.setScaleX(-progress);
             if (mRibbonView != null && mHasQuickAccessSettings) {
@@ -1975,7 +1990,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         } else { // settings side
             mFlipSettingsView.setScaleX(progress);
             mFlipSettingsView.setVisibility(View.VISIBLE);
-            mSettingsButton.setVisibility(View.GONE);
+            mQuickSettingsButton.setVisibility(View.GONE);
             mScrollView.setVisibility(View.GONE);
             mScrollView.setScaleX(0f);
             if (mRibbonView != null) {
@@ -1995,7 +2010,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
         if (mScrollViewAnim != null) mScrollViewAnim.cancel();
         if (mRibbonViewAnim != null) mRibbonViewAnim.cancel();
-        if (mSettingsButtonAnim != null) mSettingsButtonAnim.cancel();
+        if (mQuickSettingsButtonAnim != null) mQuickSettingsButtonAnim.cancel();
         if (mHaloButtonAnim != null) mHaloButtonAnim.cancel();
         if (mNotificationButtonAnim != null) mNotificationButtonAnim.cancel();
         if (mClearButtonAnim != null) mClearButtonAnim.cancel();
@@ -2034,9 +2049,9 @@ public class PhoneStatusBar extends BaseStatusBar {
                                     .setDuration(FLIP_DURATION_OUT),
                                     mRibbonView, View.GONE));
         }
-        mSettingsButtonAnim = start(
+        mQuickSettingsButtonAnim = start(
             setVisibilityWhenDone(
-                ObjectAnimator.ofFloat(mSettingsButton, View.ALPHA, 0f)
+                ObjectAnimator.ofFloat(mQuickSettingsButton, View.ALPHA, 0f)
                     .setDuration(FLIP_DURATION),
                     mScrollView, View.INVISIBLE));
         mHaloButtonAnim = start(
@@ -2096,7 +2111,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             if (mFlipSettingsViewAnim != null) mFlipSettingsViewAnim.cancel();
             if (mScrollViewAnim != null) mScrollViewAnim.cancel();
             if (mRibbonViewAnim != null) mRibbonViewAnim.cancel();
-            if (mSettingsButtonAnim != null) mSettingsButtonAnim.cancel();
+            if (mQuickSettingsButtonAnim != null) mQuickSettingsButtonAnim.cancel();
             if (mHaloButtonAnim != null) mHaloButtonAnim.cancel();
             if (mNotificationButtonAnim != null) mNotificationButtonAnim.cancel();
             if (mClearButtonAnim != null) mClearButtonAnim.cancel();
@@ -2107,8 +2122,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                 mRibbonView.setScaleX(1f);
                 mRibbonView.setVisibility(View.VISIBLE);
             }
-            mSettingsButton.setAlpha(1f);
-            mSettingsButton.setVisibility(View.VISIBLE);
+            mQuickSettingsButton.setAlpha(1f);
+            mQuickSettingsButton.setVisibility(View.VISIBLE);
             mHaloButton.setAlpha(1f);
             mHaloButtonVisible = true;
             updateHaloButton();
@@ -2888,7 +2903,7 @@ public class PhoneStatusBar extends BaseStatusBar {
         animateCollapsePanels();
     }
 
-    private final View.OnClickListener mSettingsButtonListener = new View.OnClickListener() {
+    private final View.OnClickListener mQuickSettingsButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mHasSettingsPanel) {

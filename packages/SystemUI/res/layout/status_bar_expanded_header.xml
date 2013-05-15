@@ -91,12 +91,21 @@
         android:contentDescription="@string/accessibility_halo"
         />          
 
+    <ImageView android:id="@+id/settings_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="8dp"
+        android:scaleType="center"
+        android:visibility="gone"
+        android:src="@drawable/ic_notify_settings"
+        />
+
     <FrameLayout android:id="@+id/settings_button_holder"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="5dp"
         >
-        <ImageView android:id="@+id/settings_button"
+        <ImageView android:id="@+id/quicksettings_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="center"
