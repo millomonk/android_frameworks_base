@@ -145,6 +145,7 @@ public class HaloProperties extends FrameLayout {
         mHaloTickerWrapper = mHaloContentView.findViewById(R.id.ticker_wrapper);
         mHaloTickerContent = mHaloContentView.findViewById(R.id.ticker);
         mHaloTextView = (TextView) mHaloContentView.findViewById(R.id.bubble);
+        mHaloTextViewR.setAlpha(1f);
 
         updateColorView();
 
@@ -421,6 +422,8 @@ public class HaloProperties extends FrameLayout {
             ContentResolver resolver = mContext.getContentResolver();
 
             resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_COLORS), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HALO_CIRCLE_COLOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HALO_BUBBLE_TEXT_COLOR), false, this);
@@ -435,17 +438,21 @@ public class HaloProperties extends FrameLayout {
 
     private void updateColorView() {
         ContentResolver cr = mContext.getContentResolver();
+        boolean mEnableColor = Settings.System.getInt(cr,
+               Settings.System.HALO_COLORS, 0) == 1;
         int mCircleColor = Settings.System.getInt(cr,
                Settings.System.HALO_CIRCLE_COLOR, 0xFF33B5E5);
         int mTextColor = Settings.System.getInt(cr, 
                Settings.System.HALO_BUBBLE_TEXT_COLOR, 0xFFFFFFFF);
 
-        // Ring
-        mHaloBg.setBackgroundResource(R.drawable.halo_bg);
-        mHaloBg.getBackground().setColorFilter(ColorFilterMaker.
-                changeColorAlpha(mCircleColor, .32f, 0f));
+        if (mEnableColor) {
+           // Ring
+           mHaloBg.setBackgroundResource(R.drawable.halo_bg);
+           mHaloBg.getBackground().setColorFilter(ColorFilterMaker.
+                   changeColorAlpha(mCircleColor, .32f, 0f));
 
-        mHaloTextView.setTextColor(mTextColor);
-        mHaloTextView.setAlpha(1f);
+           // Speech bubbles
+           mHaloTextView.setTextColor(mTextColor);
+        }
     }
 }
