@@ -198,7 +198,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
     private String KEY_HALO_POSITION_X = "halo_position_x";
     private String KEY_HALO_FIRST_RUN = "halo_first_run";
 
-
     private final class SettingsObserver extends ContentObserver {
         SettingsObserver(Handler handler) {
             super(handler);

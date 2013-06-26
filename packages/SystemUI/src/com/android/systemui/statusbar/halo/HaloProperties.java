@@ -109,7 +109,10 @@ public class HaloProperties extends FrameLayout {
 
     private boolean mLastContentStateLeft = true;
 
-    Handler mHandler;
+    private boolean mAttached = false;
+
+    private SettingsObserver mSettingsObserver;
+    private Handler mHandler;
 
     CustomObjectAnimator mHaloOverlayAnimator;
 
@@ -145,7 +148,7 @@ public class HaloProperties extends FrameLayout {
         mHaloTickerWrapper = mHaloContentView.findViewById(R.id.ticker_wrapper);
         mHaloTickerContent = mHaloContentView.findViewById(R.id.ticker);
         mHaloTextView = (TextView) mHaloContentView.findViewById(R.id.bubble);
-        mHaloTextViewR.setAlpha(1f);
+        mHaloTextView.setAlpha(1f);
 
         updateColorView();
 
@@ -164,8 +167,6 @@ public class HaloProperties extends FrameLayout {
         mHaloOverlayAnimator = new CustomObjectAnimator(this);
 
         mHandler = new Handler();
-        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
     }
 
     int newPaddingHShort;
@@ -204,6 +205,28 @@ public class HaloProperties extends FrameLayout {
         mHaloNumberIcon.setLayoutParams(layoutParams4);
 
         updateResources(mLastContentStateLeft);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        if (!mAttached) {
+            mAttached = true;
+            mSettingsObserver = new SettingsObserver(new Handler());
+            mSettingsObserver.observe();
+            updateColorView();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        if (mAttached) {
+            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
+            mAttached = false;
+        }
     }
 
     public void setHaloX(int value) {
