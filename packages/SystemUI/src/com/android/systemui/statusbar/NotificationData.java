@@ -23,7 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.android.systemui.statusbar.BaseStatusBar.NotificationClicker;
-import com.android.internal.statusbar.StatusBarNotification;
+import android.service.notification.StatusBarNotification;
 import com.android.systemui.R;
 
 import java.util.Comparator;
@@ -40,6 +40,7 @@ public class NotificationData {
         public View row; // the outer expanded view
         public View content; // takes the click events and sends the PendingIntent
         public View expanded; // the inflated RemoteViews
+        public View haloContent;
         public ImageView largeIcon;
         protected boolean hide = false;
         protected Bitmap roundIcon;
@@ -50,12 +51,6 @@ public class NotificationData {
             this.key = key;
             this.notification = n;
             this.icon = ic;
-        }
-        public Entry(IBinder key, StatusBarNotification n, StatusBarIconView ic, Bitmap ri) {
-            this.key = key;
-            this.notification = n;
-            this.icon = ic;
-            this.roundIcon = ri;
         }
         public void setLargeView(View expandedLarge) {
             this.expandedLarge = expandedLarge;

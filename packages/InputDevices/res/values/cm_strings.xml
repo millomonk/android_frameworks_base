@@ -1,4 +1,6 @@
-<!-- Copyright (C) 2013 ParanoidAndroid Project
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2013 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -12,10 +14,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-<com.android.systemui.statusbar.halo.Halo
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</com.android.systemui.statusbar.halo.Halo>
+    <!-- US English (Colemak style) keyboard layout label. [CHAR LIMIT=35] -->
+    <string name="keyboard_layout_english_us_colemak_label">English (US), Colemak style</string>
+
+    <!-- Armenian Eastern keyboard layout label. [CHAR LIMIT=35] -->
+    <string name="keyboard_layout_armenian_eastern_label">Armenian Eastern</string>
+
+</resources>
