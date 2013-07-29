@@ -81,6 +81,7 @@ import com.android.internal.util.FastXmlSerializer;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -406,17 +407,6 @@ public class NotificationManagerService extends INotificationManager.Stub
     }
 
     Archive mArchive = new Archive();
-
-    private void loadBlockDb() {
-        synchronized(mBlockedPackages) {
-            if (mPolicyFile == null) {
-                File dir = new File("/data/system");
-                mPolicyFile = new AtomicFile(new File(dir, "notification_policy.xml"));
-
-                mBlockedPackages.clear();
-            }
-        }
-    }
 
     private int readPolicy(AtomicFile file, String lookUpTag, HashSet<String> db, String resultTag, int defaultResult) {
         int result = defaultResult;
