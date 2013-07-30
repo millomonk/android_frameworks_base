@@ -3453,6 +3453,13 @@ public final class Settings {
          * @hide
          */
         public static final String ENABLE_STYLUS_GESTURES = "enable_stylus_gestures";
+        
+        /**
+         * Quick Settings Launch in Floating Window
+         * 
+         * @hide
+         */
+        public static final String QS_FLOATING_WINDOW = "qs_floating_window";
 
         /**
          * Left Swipe Action
