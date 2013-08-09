@@ -3688,6 +3688,13 @@ public final class Settings {
         public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
 
         /**
+         * Automatically unhide status bar temporarily in fullscreen on new notifications
+         *
+         * @hide
+         */
+        public static final String STATUS_BAR_AUTO_UNHIDE = "status_bar_auto_unhide";
+
+        /**
          * Choose side for Clear button on Recents window
          * 0 = left, 1 = right
          * @hide

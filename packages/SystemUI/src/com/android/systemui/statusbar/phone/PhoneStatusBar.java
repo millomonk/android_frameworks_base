@@ -21,6 +21,8 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -29,6 +31,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
+import android.app.StatusBarManager;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.StatusBarManager;
@@ -374,6 +377,8 @@ public class PhoneStatusBar extends BaseStatusBar {
                     Settings.System.SCREEN_BRIGHTNESS_MODE), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_SETTINGS_BUTTON), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.STATUS_BAR_AUTO_UNHIDE), false, this);
             update();
         }
 
@@ -394,6 +399,8 @@ public class PhoneStatusBar extends BaseStatusBar {
             boolean notificationSettingsBtn = Settings.System.getInt(
                     resolver, Settings.System.NOTIFICATION_SETTINGS_BUTTON, 0) == 1;
             mSettingsButton.setVisibility(notificationSettingsBtn ? View.VISIBLE : View.GONE);
+            mStatusBarAutoUnhide = Settings.System.getInt(
+                    resolver, Settings.System.STATUS_BAR_AUTO_UNHIDE, 0) == 1;
             showClock(true); 
         }
     }
@@ -1204,7 +1211,7 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     @Override
-    public void addNotification(IBinder key, StatusBarNotification notification) {
+    public void addNotification(IBinder key, final StatusBarNotification notification) {
         if (DEBUG) Slog.d(TAG, "addNotification score=" + notification.getScore());
         StatusBarIconView iconView = addNotificationViews(key, notification);
         if (iconView == null) return;
@@ -1270,7 +1277,24 @@ public class PhoneStatusBar extends BaseStatusBar {
 
             // show the ticker if there isn't an intruder too
             if (mCurrentlyIntrudingNotification == null) {
-                tick(null, notification, true);
+
+                if (mStatusBarAutoUnhide && mStatusBarHidden && mFullscreenView == null) {
+                    showFullscreenView();
+
+                    final Handler handler = new Handler();
+                    final Timer timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        public void run() {
+                            handler.post(new Runnable() {
+                                public void run() {
+                                    tick(null, notification, true);
+                                }
+                            });
+                        }
+                    }, 250);
+                } else {
+                    tick(null, notification, true);
+                }
             }
         }
 
@@ -2556,6 +2580,11 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     @Override
+    public void setStatusBarHiddenState(boolean hidden) {
+        mStatusBarHidden = hidden;
+    }
+
+    @Override
     public void setImeWindowStatus(IBinder token, int vis, int backDisposition) {
         boolean altBack = (backDisposition == InputMethodService.BACK_DISPOSITION_WILL_DISMISS)
             || ((vis & InputMethodService.IME_VISIBLE) != 0);
@@ -2572,7 +2601,10 @@ public class PhoneStatusBar extends BaseStatusBar {
     @Override
     protected void tick(IBinder key, StatusBarNotification n, boolean firstTime) {
         // no ticking in lights-out mode, except if halo is active
-        if (!areLightsOn() && !mHaloActive) return;
+        if (!areLightsOn() && !mHaloActive) {
+            removeFullscreenView();
+            return;
+        }
 
         // no ticking in Setup
         if (!isDeviceProvisioned()) return;
@@ -2623,6 +2655,21 @@ public class PhoneStatusBar extends BaseStatusBar {
                 mCenterClockLayout.startAnimation(loadAnim(com.android.internal.R.anim.push_down_in,
                         null));
             }
+
+            if (mFullscreenView != null && !mExpandedVisible) {
+                final Handler handler = new Handler();
+                final Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    public void run() {
+                        handler.post(new Runnable() {
+                            public void run() {
+                                removeFullscreenView();
+                            }
+                        });
+                    }
+                }, 750);
+
+            }
         }
 
         @Override
@@ -2634,6 +2681,7 @@ public class PhoneStatusBar extends BaseStatusBar {
                 mStatusBarContents.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
                 mCenterClockLayout.startAnimation(loadAnim(com.android.internal.R.anim.fade_in, null));
                 // we do not animate the ticker away at this point, just get rid of it (b/6992707)
+                removeFullscreenView();
             }
         }
     }
