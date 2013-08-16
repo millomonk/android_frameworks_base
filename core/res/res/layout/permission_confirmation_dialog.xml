@@ -38,32 +38,9 @@
         android:paddingTop="16dip"
         android:paddingBottom="16dip" />
 
-    <TableLayout android:id="@+id/permission_remember_layout"
-        android:shrinkColumns="1"
+    <CheckBox android:id="@+id/permission_remember_choice_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dip"
-        android:paddingRight="16dip">
-
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-            <RelativeLayout android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="12dip"
-                android:paddingLeft="8dip" >
-            <CheckBox android:id="@+id/permission_remember_choice_checkbox"
-                android:paddingTop="11dip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            </RelativeLayout>
-            <TextView android:id="@+id/permission_remember_choice_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="18dip"
-                android:text="@string/permission_remember_choice" />
-        </TableRow>
-
-    </TableLayout>
+        android:text="@string/save_password_remember" />
 
 </LinearLayout>

@@ -22,9 +22,24 @@ package com.android.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 class PermissionDialogResult {
 
-    public final static class Result {
+    public final static class Result implements Parcelable {
+
+        boolean mHasResult = false;
+        int mResult;
+
+        public Result() {
+        }
+
+        public Result(Parcel in) {
+            mHasResult = in.readInt() == 1 ? true : false;
+            mResult = in.readInt();
+        }
+
         public void set(int res) {
             synchronized (this) {
                 mHasResult = true;
@@ -39,14 +54,34 @@ class PermissionDialogResult {
                     try {
                         wait();
                     } catch (InterruptedException e) {
+                        // Do nothing
                     }
                 }
             }
             return mResult;
         }
 
-        boolean mHasResult = false;
-        int mResult;
+        public static final Parcelable.Creator<Result> CREATOR =
+                new Parcelable.Creator<Result>() {
+            public Result createFromParcel(Parcel in) {
+                return new Result(in);
+            }
+
+            public Result[] newArray(int size) {
+                return new Result[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(mHasResult ? 1 : 0);
+            dest.writeInt(mResult);
+        }
     }
 
     public PermissionDialog mDialog;
@@ -65,11 +100,10 @@ class PermissionDialogResult {
 
     public void notifyAll(int mode) {
         synchronized(this) {
-            while(resultList.size() != 0) {
-                Result res = resultList.get(0);
+            for (Result res : resultList) {
                 res.set(mode);
-                resultList.remove(0);
             }
+            resultList.clear();
         }
     }
 }

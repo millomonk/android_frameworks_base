@@ -71,23 +71,24 @@ class PermissionDialog extends BasePermissionDialog {
         mOpLabels = res.getTextArray(R.array.app_ops_labels);
 
         setCancelable(false);
-        setTitle("Permission");
+        setTitle(R.string.permission_request_notification_title);
         getWindow().addFlags(FLAG_SYSTEM_ERROR);
 
         mView = getLayoutInflater().inflate(R.layout.permission_confirmation_dialog, null);
         TextView tv = (TextView) mView.findViewById(R.id.permission_text);
         mChoice = (CheckBox) mView.findViewById(R.id.permission_remember_choice_checkbox);
         String name = getAppName(mPackageName);
-        if(name == null)
+        if (name == null) {
             name = mPackageName;
+        }
         tv.setText(name + ": " + mOpLabels[mCode]);
         setView(mView);
 
         setButton(DialogInterface.BUTTON_POSITIVE,
-                  "Allow", mHandler.obtainMessage(ACTION_ALLOWED));
+                res.getString(R.string.allow), mHandler.obtainMessage(ACTION_ALLOWED));
 
         setButton(DialogInterface.BUTTON_NEGATIVE,
-                  "Denied", mHandler.obtainMessage(ACTION_IGNORED));
+                res.getString(R.string.deny), mHandler.obtainMessage(ACTION_IGNORED));
 
         // After the timeout, pretend the user clicked the quit button
         //mHandler.sendMessageDelayed(
@@ -99,14 +100,13 @@ class PermissionDialog extends BasePermissionDialog {
         ApplicationInfo appInfo = null;
         PackageManager pm = mContext.getPackageManager();
         try {
-            appInfo = pm.getApplicationInfo(packageName,
-                      PackageManager.GET_DISABLED_COMPONENTS
-                      | PackageManager.GET_UNINSTALLED_PACKAGES);
+            appInfo = pm.getApplicationInfo(packageName, PackageManager.GET_DISABLED_COMPONENTS
+                    | PackageManager.GET_UNINSTALLED_PACKAGES);
         } catch (final NameNotFoundException e) {
             return null;
         }
-        if(appInfo != null) {
-            return  (String)pm.getApplicationLabel(appInfo);
+        if (appInfo != null) {
+            return (String) pm.getApplicationLabel(appInfo);
         }
         return null;
     }
@@ -125,6 +125,7 @@ class PermissionDialog extends BasePermissionDialog {
                 default:
                     mode = AppOpsManager.MODE_IGNORED;
                     remember = false;
+                    break;
             }
             mService.notifyOperation(mCode, mUid, mPackageName, mode, remember);
             dismiss();

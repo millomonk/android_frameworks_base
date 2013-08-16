@@ -40,6 +40,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -135,11 +136,11 @@ public class AppOpsService extends IAppOpsService.Stub {
 
         public Op(int _op, boolean strict) {
             op = _op;
-            if(!strict)
+            if (!strict) {
                 mode = AppOpsManager.MODE_ALLOWED;
-            else
+            } else {
                 mode = AppOpsManager.MODE_ASK;
-
+            }
             dialogResult = new PermissionDialogResult();
             defaultMode = mode;
         }
@@ -180,17 +181,18 @@ public class AppOpsService extends IAppOpsService.Stub {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                 case SHOW_PERMISSION_DIALOG: {
-                    HashMap<String, Object> data = (HashMap<String, Object>) msg.obj;
+                    Bundle data = msg.getData();
                     synchronized (this) {
-                        Op op = (Op) data.get("op");
-                        Result res = (Result) data.get("result");
+                        Op op = (Op) msg.obj;
+                        Result res = (Result) data.getParcelable("result");
                         op.dialogResult.register(res);
-                        if(op.dialogResult.mDialog == null) {
-                            Integer code = (Integer) data.get("code");
-                            Integer uid  = (Integer) data.get("uid");
-                            String packageName = (String) data.get("packageName");
-                            Dialog d = new PermissionDialog(mContext, AppOpsService.this, code, uid, packageName);
-                            op.dialogResult.mDialog = (PermissionDialog)d;
+                        if (op.dialogResult.mDialog == null) {
+                            Integer code = data.getInt("code");
+                            Integer uid  = data.getInt("uid");
+                            String packageName = data.getString("packageName");
+                            PermissionDialog d = new PermissionDialog(mContext, AppOpsService.this,
+                                    code, uid, packageName);
+                            op.dialogResult.mDialog = d;
                             d.show();
                         }
                     }
@@ -532,9 +534,9 @@ public class AppOpsService extends IAppOpsService.Stub {
     }
 
     private boolean isStrict(int code, int uid, String packageName) {
-        if (!mStrictEnable)
+        if (!mStrictEnable) {
             return false;
-
+        }
         return ((uid > Process.FIRST_APPLICATION_UID) &&
                 (AppOpsManager.opStrict(code)) && !isInWhitelist(packageName));
     }
@@ -543,11 +545,10 @@ public class AppOpsService extends IAppOpsService.Stub {
         return mWhitelist.contains(packageName);
     }
 
-    private void recordOperationLocked(int code, int uid, String packageName,
-                                       int mode) {
+    private void recordOperationLocked(int code, int uid, String packageName, int mode) {
         int switchCode = AppOpsManager.opToSwitch(code);
         Op op = getOpLocked(switchCode, uid, packageName, false);
-        if(op != null) {
+        if (op != null) {
             if (mode == AppOpsManager.MODE_IGNORED) {
                 if (DEBUG) Log.d(TAG, "recordOperation: reject #" + mode + " for code "
                         + switchCode + " (" + code + ") uid " + uid + " package " + packageName);
@@ -562,7 +563,7 @@ public class AppOpsService extends IAppOpsService.Stub {
     }
 
     public void notifyOperation(int code, int uid, String packageName, int mode,
-                              boolean remember) {
+            boolean remember) {
         verifyIncomingUid(uid);
         verifyIncomingOp(code);
         ArrayList<Callback> repCbs = null;
@@ -590,7 +591,7 @@ public class AppOpsService extends IAppOpsService.Stub {
                 op.dialogResult.mDialog = null;
 
                 // if User selected to remember her choice
-                if(remember) {
+                if (remember) {
                     if (op.mode != mode) {
                         op.mode = mode;
                         ArrayList<Callback> cbs = mOpModeWatchers.get(code);
@@ -635,13 +636,13 @@ public class AppOpsService extends IAppOpsService.Stub {
         final long origId = Binder.clearCallingIdentity();
         Message msg = Message.obtain();
         msg.what = SHOW_PERMISSION_DIALOG;
-        HashMap data = new HashMap();
-        data.put("result", result);
-        data.put("code", code);
-        data.put("packageName", packageName);
-        data.put("op", op);
-        data.put("uid", uid);
-        msg.obj = data;
+        Bundle data = new Bundle();
+        data.putParcelable("result", result);
+        data.putInt("code", code);
+        data.putString("packageName", packageName);
+        data.putInt("uid", uid);
+        msg.setData(data);
+        msg.obj = op;
         mHandler.sendMessage(msg);
         Binder.restoreCallingIdentity(origId);
         return result;
@@ -655,10 +656,11 @@ public class AppOpsService extends IAppOpsService.Stub {
         synchronized (this) {
             Op op = getOpLocked(AppOpsManager.opToSwitch(code), uid, packageName, false);
             if (op == null) {
-                if(!isStrict(code, uid, packageName))
+                if (!isStrict(code, uid, packageName)) {
                     return AppOpsManager.MODE_ALLOWED;
-                else
+                } else {
                     return  AppOpsManager.MODE_ASK;
+                }
             }
             return op.mode;
         }
@@ -692,7 +694,7 @@ public class AppOpsService extends IAppOpsService.Stub {
             switchCode = AppOpsManager.opToSwitch(code);
             switchOp = switchCode != code ? getOpLocked(ops, uid, switchCode, true, strict) : op;
             mode = switchOp.mode;
-            if(mode != AppOpsManager.MODE_ASK) {
+            if (mode != AppOpsManager.MODE_ASK) {
                 recordOperationLocked(code, uid, packageName, switchOp.mode);
                 return switchOp.mode;
             } else {
@@ -725,9 +727,9 @@ public class AppOpsService extends IAppOpsService.Stub {
             switchCode = AppOpsManager.opToSwitch(code);
             switchOp = switchCode != code ? getOpLocked(ops, uid, switchCode, true, strict) : op;
             mode = switchOp.mode;
-            if(mode != AppOpsManager.MODE_ASK) {
+            if (mode != AppOpsManager.MODE_ASK) {
                 recordOperationLocked(code, uid, packageName, switchOp.mode);
-                if(mode == AppOpsManager.MODE_ALLOWED) {
+                if (mode == AppOpsManager.MODE_ALLOWED) {
                     if (op.nesting == 0) {
                         op.time = System.currentTimeMillis();
                         op.rejectTime = 0;
@@ -875,20 +877,20 @@ public class AppOpsService extends IAppOpsService.Stub {
     }
 
     void readWhitelist() {
-        // Read if whitelist file provided
         String whitelistFileName = SystemProperties.get(WHITELIST_FILE);
-        if(!mStrictEnable || "".equals(whitelistFileName)) {
+        // Read if whitelist file provided
+        if (!mStrictEnable || "".equals(whitelistFileName)) {
             return;
         }
         final File whitelistFile = new File(whitelistFileName);
-        final AtomicFile mWhitelistFile = new AtomicFile(whitelistFile);
-        synchronized (mWhitelistFile) {
+        final AtomicFile whitelistAtomicFile = new AtomicFile(whitelistFile);
+        synchronized (mWhitelist) {
             synchronized (this) {
                 FileInputStream stream;
                 try {
-                    stream = mWhitelistFile.openRead();
+                    stream = whitelistAtomicFile.openRead();
                 } catch (FileNotFoundException e) {
-                    Slog.i(TAG, "No existing app ops whitelist " + mWhitelistFile.getBaseFile());
+                    Slog.i(TAG, "No existing app ops whitelist " + whitelistAtomicFile.getBaseFile());
                     return;
                 }
                 boolean success = false;
@@ -947,6 +949,7 @@ public class AppOpsService extends IAppOpsService.Stub {
             }
         }
     }
+
     void readState() {
         synchronized (mFile) {
             synchronized (this) {

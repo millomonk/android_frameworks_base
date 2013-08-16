@@ -1722,9 +1722,10 @@ public class ConnectivityService extends IConnectivityManager.Stub {
 
         AppOpsManager appOps = (AppOpsManager)mContext.getSystemService(Context.APP_OPS_SERVICE);
         int callingUid = Binder.getCallingUid();
-        if (appOps.noteOp(AppOpsManager.OP_DATA_CONNECT_CHANGE,callingUid,callingPackage) !=
-            AppOpsManager.MODE_ALLOWED)
+        if (appOps.noteOp(AppOpsManager.OP_DATA_CONNECT_CHANGE, callingUid, callingPackage) !=
+                AppOpsManager.MODE_ALLOWED) {
             return;
+        }
 
         mHandler.sendMessage(mHandler.obtainMessage(EVENT_SET_MOBILE_DATA,
                 (enabled ? ENABLED : DISABLED), 0));
