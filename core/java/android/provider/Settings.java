@@ -2729,6 +2729,13 @@ public final class Settings {
          */
         public static final String PIE_COLORS = "pie_colors";
 
+	/**
+         * Quick Settings Disable Panel
+         *
+         * @hide
+         */
+        public static final String QS_DISABLE_PANEL = "qs_disable_panel";  
+
         /**
          * Animate-flip Quick Settings Panel Tiles on click
          *
@@ -2736,7 +2743,7 @@ public final class Settings {
          */
         public static final String QUICK_SETTINGS_TILES_FLIP = "quick_settings_tiles_flip";
 
-        /**
+	/**
          * Quick Settings Panel Tiles to Use
          *
          * @hide

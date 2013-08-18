@@ -231,7 +231,8 @@ public class PhoneStatusBar extends BaseStatusBar {
 
     // settings
     QuickSettingsController mQS;
-    boolean mHasSettingsPanel, mHasFlipSettings;
+    boolean mHasSettingsPanel, mHideSettingsPanel, mHasFlipSettings; 
+    boolean mUiModeIsToggled; 
     SettingsPanelView mSettingsPanel;
     View mFlipSettingsView;
     QuickSettingsContainerView mSettingsContainer;
@@ -610,6 +611,16 @@ public class PhoneStatusBar extends BaseStatusBar {
         mDateView = (DateView)mStatusBarWindow.findViewById(R.id.date);
 
         mHasSettingsPanel = res.getBoolean(R.bool.config_hasSettingsPanel);
+
+        if (mStatusBarView.hasFullWidthNotifications()) {
+            mHideSettingsPanel = Settings.System.getInt(mContext.getContentResolver(),
+                                    Settings.System.QS_DISABLE_PANEL, 0) == 1;
+            mHasSettingsPanel = res.getBoolean(R.bool.config_hasSettingsPanel) && !mHideSettingsPanel;
+        } else {
+            mHideSettingsPanel = false;
+            mHasSettingsPanel = res.getBoolean(R.bool.config_hasSettingsPanel);
+        }
+
         mHasFlipSettings = res.getBoolean(R.bool.config_hasFlipSettingsPanel);
 
         mDateTimeView = mNotificationPanelHeader.findViewById(R.id.datetime);
@@ -2111,7 +2122,8 @@ public class PhoneStatusBar extends BaseStatusBar {
             mHaloButtonVisible = true;
             updateHaloButton();
             mNotificationPanel.setVisibility(View.GONE);
-            mFlipSettingsView.setVisibility(View.GONE);
+            if (!mHideSettingsPanel)
+                mFlipSettingsView.setVisibility(View.GONE); 
             mNotificationButton.setVisibility(View.GONE);
             setAreThereNotifications(); // show the clear button
         }
@@ -3293,6 +3305,16 @@ public class PhoneStatusBar extends BaseStatusBar {
         @Override
         public void onChange(boolean selfChange) {
             onChange(selfChange, null);
+
+        boolean hideSettingsPanel = Settings.System.getInt(mContext.getContentResolver(),
+                                    Settings.System.QS_DISABLE_PANEL, 0) == 1;
+        if (hideSettingsPanel != mHideSettingsPanel) {
+                recreateStatusBar();
+        } 
+
+        if (mSettingsContainer != null) {
+	        mQS.setupQuickSettings();
+            } 
         }
 
         @Override
@@ -3331,6 +3353,10 @@ public class PhoneStatusBar extends BaseStatusBar {
             cr.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.QS_DYNAMIC_WIFI),
                     false, this, UserHandle.USER_ALL);
+
+	    cr.registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.QS_DISABLE_PANEL),
+                    false, this);   
         }
     }
 
