@@ -89,7 +89,7 @@
     <integer name="quick_settings_user_time_settings_tile_span">1</integer>
 
     <!-- Whether rotation lock shows up in quick settings or not -->
-    <bool name="quick_settings_show_rotation_lock">true</bool>
+    <bool name="quick_settings_show_rotation_lock">false</bool>
 
     <!-- Timeouts for brightness dialog to disappear -->
     <integer name="quick_settings_brightness_dialog_short_timeout">2000</integer>
@@ -106,7 +106,5 @@
     <!-- Should "4G" be shown instead of "LTE" when the network is NETWORK_TYPE_LTE? -->
     <bool name="config_show4GForLTE">true</bool>
 
-    <!-- configurable width dimension for the app sidebar trigger area -->
-    <dimen name="config_app_sidebar_trigger_width">8dip</dimen>
 </resources>
 
