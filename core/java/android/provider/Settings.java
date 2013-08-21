@@ -2591,13 +2591,6 @@ public final class Settings {
         public static final String DESK_DOCK_SOUND = Global.DESK_DOCK_SOUND;
 
         /**
-         * Goodbye fullscreen keyboard
-         *
-         * @hide
-         */
-        public static final String FULLSCREEN_KEYBOARD = "fullscreen_keyboard";
-
-        /**
          * @deprecated Use {@link android.provider.Settings.Global#DESK_UNDOCK_SOUND}
          * instead
          * @hide
@@ -3173,31 +3166,6 @@ public final class Settings {
          * @hide
          */
         public static final String EXPANDED_DESKTOP_STYLE = "expanded_desktop_style";
-
-        /**
-         * Whether Status bar should be hiidden when there are no
-         * notifications
-         * @hide
-         */
-        public static final String AUTO_HIDE_STATUSBAR = "auto_hide_statusbar";
-        
-        /**
-         * Whether Status bar can be shown by swiping down in fullscreen apps
-         * @hide
-         */
-        public static final String FULLSCREEN_STATUSBAR = "fullscreen_statusbar"; 
-
-        /**
-         * Timeout of fullscreen Status bar
-         * @hide
-         */
-        public static final String FULLSCREEN_STATUSBAR_TIMEOUT = "fullscreen_statusbar_timeout"; 
-
-        /**
-         * Whether Status Bar is currently hidden or not
-         * @hide
-         */
-        public static final String HIDE_STATUSBAR = "hide_statusbar"; 
 
        /**
         * Whether fcharge is enabled or not if kernel supports it
