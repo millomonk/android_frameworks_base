@@ -2676,6 +2676,13 @@ public final class Settings {
         public static final String POINTER_SPEED = "pointer_speed";
 
         /**
+         * Goodbye fullscreen keyboard
+         *
+         * @hide
+         */
+        public static final String FULLSCREEN_KEYBOARD = "fullscreen_keyboard";
+
+        /**
          * Whether to enable pie controls?
          * The value is integer:
          * 2 = always on
