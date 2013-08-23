@@ -26,7 +26,6 @@ import com.android.internal.R;
 import android.app.ActivityManagerNative;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.KeyguardManager;
 import android.app.Profile;
 import android.app.ProfileManager;
 import android.content.BroadcastReceiver;
@@ -449,37 +448,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
 
                     public boolean showDuringKeyguard() {
                         return true;
-                    }
-
-                    public boolean showBeforeProvisioning() {
-                        return false;
-                    }
-                });
-        }
-
-        // next: profile
-        // only shown if both system profiles and the menu item is enabled, enabled by default
-        final int mProfile = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.POWER_MENU_PROFILES_ENABLED, 1);
-        final KeyguardManager km = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
-        if ((Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.SYSTEM_PROFILES_ENABLED, 1) == 1) && (mProfile != 0)) {
-            mItems.add(
-                new ProfileChooseAction() {
-                    public void onPress() {
-                        createProfileDialog();
-                    }
-
-                    public boolean onLongPress() {
-                        return true;
-                    }
-
-                    public boolean showDuringKeyguard() {
-                        if (mProfile == 2 && !km.isKeyguardSecure()) {
-                            return true;
-                        } else {
-                            return false;
-                        }
                     }
 
                     public boolean showBeforeProvisioning() {
