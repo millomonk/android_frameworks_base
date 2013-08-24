@@ -2919,45 +2919,9 @@ public final class Settings {
         public static final String EXPANDED_FLASH_MODE = "expanded_flash_mode";
 
         /**
-         * HALO being minimal.
-         * @hide
-         */
-        public static final String HALO_STYLE = "halo_style";
-
-        /**
-         * HALO colors
-         * @hide
-         */
-        public static final String HALO_COLORS = "halo_colors";
-
-        /**
-         * HALO speech bubble color
-         * @hide
-         */
-        public static final String HALO_BUBBLE_COLOR = "halo_bubble_color";
-
-        /**
-         * HALO speech bubble text color
-         * @hide
-         */
-        public static final String HALO_BUBBLE_TEXT_COLOR = "halo_bubble_text_color";
-
-        /**
-         * HALO effect color
-         * @hide
-         */
-        public static final String HALO_EFFECT_COLOR = "halo_effect_color";
-
-        /**
-         * HALO circle bg color
-         * @hide
-         */
-        public static final String HALO_CIRCLE_COLOR = "halo_circle_color";
-
-        /**
-         * AutoHide CombinedBar on tablets.
-         * @hide
-         */
+        * AutoHide CombinedBar on tablets.
+        * @hide
+        */
         public static final String COMBINED_BAR_AUTO_HIDE = "combined_bar_auto_hide";
 
         /**
@@ -2993,12 +2957,6 @@ public final class Settings {
          * @hide
          */
         public static final String HALO_HIDE = "halo_hide";
-
-        /**
-         * HALO size fraction, default is 1.0f (normal)
-         * @hide
-         */
-        public static final String HALO_SIZE = "halo_size";
 
         /**
          * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true

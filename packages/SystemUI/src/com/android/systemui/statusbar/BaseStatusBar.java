@@ -441,13 +441,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                 updateHalo();
             }});
 
-        mContext.getContentResolver().registerContentObserver(
-                Settings.System.getUriFor(Settings.System.HALO_SIZE), false, new ContentObserver(new Handler()) {
-            @Override
-            public void onChange(boolean selfChange) {                
-                restartHalo();
-            }});
-
         updateHalo();
 
     }
@@ -469,16 +462,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         if (mHaloButton != null) {
             mHaloButton.setVisibility(mHaloButtonVisible && !mHaloActive ? View.VISIBLE : View.GONE);
         }
-    }
-
-    protected void restartHalo() {
-        if (mHalo != null) {
-            mHalo.cleanUp();
-            mWindowManager.removeView(mHalo);
-            mHalo = null;
-        }
-        updateNotificationIcons();
-        updateHalo();
     }
 
     protected void updateHalo() {
@@ -1190,37 +1173,29 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     private Bitmap createRoundIcon(StatusBarNotification notification) {
         // Construct the round icon
-        final float haloSize = Settings.System.getFloat(mContext.getContentResolver(),
-                Settings.System.HALO_SIZE, 1.0f);
-        int iconSize = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.halo_bubble_size) * haloSize);
-        int smallIconSize = (int)(mContext.getResources().getDimensionPixelSize(R.dimen.status_bar_icon_size) * haloSize);
-        int largeIconWidth = notification.getNotification().largeIcon != null ? (int)(notification.getNotification().largeIcon.getWidth() * haloSize) : 0;
-        int largeIconHeight = notification.getNotification().largeIcon != null ? (int)(notification.getNotification().largeIcon.getHeight() * haloSize) : 0;
+        BitmapDrawable bd = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.halo_bg);
+        int iconSize = bd.getBitmap().getWidth();
+        int smallIconSize = mContext.getResources().getDimensionPixelSize(R.dimen.status_bar_icon_size);
         Bitmap roundIcon = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(roundIcon);
         canvas.drawARGB(0, 0, 0, 0);
 
-        // If we have a bona fide avatar here stretching at least over half the size of our
-        // halo-bubble, we'll use that one and cut it round
-        if (notification.getNotification().largeIcon != null
-                && largeIconWidth >= iconSize / 2) {
+        if (notification.notification.largeIcon != null) {
             Paint smoothingPaint = new Paint();
             smoothingPaint.setAntiAlias(true);
             smoothingPaint.setFilterBitmap(true);
             smoothingPaint.setDither(true);
             canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2.3f, smoothingPaint);
             smoothingPaint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-            final int newWidth = iconSize;
-            final int newHeight = iconSize * largeIconWidth / largeIconHeight;
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(notification.getNotification().largeIcon, newWidth, newHeight, true);
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(notification.notification.largeIcon, iconSize, iconSize, true);
             canvas.drawBitmap(scaledBitmap, null, new Rect(0, 0,
                     iconSize, iconSize), smoothingPaint);
         } else {
             try {
                 Drawable icon = StatusBarIconView.getIcon(mContext,
-                    new StatusBarIcon(notification.getPackageName(), notification.getUser(), notification.getNotification().icon,
-                    notification.getNotification().iconLevel, 0, notification.getNotification().tickerText));
-                if (icon == null) icon = mContext.getPackageManager().getApplicationIcon(notification.getPackageName());
+                    new StatusBarIcon(notification.pkg, notification.user, notification.notification.icon,
+                    notification.notification.iconLevel, 0, notification.notification.tickerText));
+                if (icon == null) icon = mContext.getPackageManager().getApplicationIcon(notification.pkg);
                 int margin = (iconSize - smallIconSize) / 2;
                 icon.setBounds(margin, margin, iconSize - margin, iconSize - margin);
                 icon.draw(canvas);
@@ -1255,12 +1230,12 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         NotificationData.Entry entry = new NotificationData.Entry(key, notification, iconView,
                 createRoundIcon(notification));
-        entry.hide = entry.notification.getPackageName().equals("com.cyanogenmod.halo");
+        entry.hide = entry.notification.pkg.equals("com.cyanogenmod.halo");
 
-        final PendingIntent contentIntent = notification.getNotification().contentIntent;
+        final PendingIntent contentIntent = notification.notification.contentIntent;
         if (contentIntent != null) {
             entry.floatingIntent = makeClicker(contentIntent,
-                    notification.getPackageName(), notification.getTag(), notification.getId());
+                    notification.pkg, notification.tag, notification.id);
             entry.floatingIntent.makeFloating(true);
         }
 
