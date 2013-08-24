@@ -57,7 +57,6 @@ public class HaloProperties extends FrameLayout {
     private LayoutInflater mInflater;
 
     protected int mHaloX = 0, mHaloY = 0;
-    protected int mHaloContentY = 0;
     protected float mHaloContentAlpha = 0;
 
     private Drawable mHaloDismiss;
@@ -189,14 +188,6 @@ public class HaloProperties extends FrameLayout {
         return mHaloY;
     }
 
-    public void setHaloContentY(int value) {
-        mHaloContentY = value;
-    }
-
-    public int getHaloContentY() {
-        return mHaloContentY; 
-    }
-
     protected CustomObjectAnimator msgNumberFlipAnimator = new CustomObjectAnimator(this);
     protected CustomObjectAnimator msgNumberAlphaAnimator = new CustomObjectAnimator(this);
     public void setHaloMessageNumber(int value, boolean alwaysFlip) {
@@ -205,17 +196,10 @@ public class HaloProperties extends FrameLayout {
         if (mHaloCurrentOverlay == null) {
             msgNumberAlphaAnimator.cancel(true);
             float oldAlpha = mHaloNumber.getAlpha();
-            mHaloNumber.setAlpha(1f);
-
-            if (value < 1) {
-                mHaloNumber.setText("M");
-            } else if (value < 100) {
-                mHaloNumber.setText(String.valueOf(value));
-            } else {
-                mHaloNumber.setText("+");
-            }
+            mHaloNumber.setAlpha(1f);                
+            mHaloNumber.setText((value < 100) ? String.valueOf(value == 0 ? 1 : value) : "+");
             
-            if (value < 1) {
+            if (value == 0) {
                 msgNumberAlphaAnimator.animate(ObjectAnimator.ofFloat(mHaloNumber, "alpha", 0f).setDuration(1000),
                         new DecelerateInterpolator(), null, 1500, null);
             }
@@ -278,9 +262,7 @@ public class HaloProperties extends FrameLayout {
 
             // Fade out number batch
             if (overlay != Overlay.NONE) {
-                msgNumberFlipAnimator.animate(ObjectAnimator.ofFloat(mHaloNumber, "rotationY", 270).setDuration(500),
-                        new DecelerateInterpolator(), null);
-                msgNumberAlphaAnimator.animate(ObjectAnimator.ofFloat(mHaloNumber, "alpha", 0f).setDuration(500),
+                msgNumberAlphaAnimator.animate(ObjectAnimator.ofFloat(mHaloNumber, "alpha", 0f).setDuration(250),
                         new DecelerateInterpolator(), null);
             }
         }
