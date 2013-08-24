@@ -85,9 +85,7 @@ public class HaloProperties extends FrameLayout {
         mHaloContentView = mInflater.inflate(R.layout.halo_speech, null);
         mHaloTickerContent = mHaloContentView.findViewById(R.id.ticker);
         mHaloTextViewR = (TextView) mHaloTickerContent.findViewById(R.id.bubble_r);
-        mHaloTextViewR.setAlpha(0f);
         mHaloTextViewL = (TextView) mHaloTickerContent.findViewById(R.id.bubble_l);
-        mHaloTextViewL.setAlpha(0f);
 
         updateColorView();
 
@@ -184,8 +182,6 @@ public class HaloProperties extends FrameLayout {
             ContentResolver resolver = mContext.getContentResolver();
 
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HALO_COLORS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HALO_CIRCLE_COLOR), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.HALO_BUBBLE_COLOR), false, this);
@@ -202,8 +198,6 @@ public class HaloProperties extends FrameLayout {
 
     private void updateColorView() {
         ContentResolver cr = mContext.getContentResolver();
-        boolean mEnableColor = Settings.System.getInt(cr,
-               Settings.System.HALO_COLORS, 0) == 1;
         int mCircleColor = Settings.System.getInt(cr,
                Settings.System.HALO_CIRCLE_COLOR, 0xFF33B5E5);
         int mBubbleColor = Settings.System.getInt(cr,
@@ -211,21 +205,21 @@ public class HaloProperties extends FrameLayout {
         int mTextColor = Settings.System.getInt(cr, 
                Settings.System.HALO_BUBBLE_TEXT_COLOR, 0xFFFFFFFF);
 
-        if (mEnableColor) {
-           // Ring
-           mHaloBg.setBackgroundResource(R.drawable.halo_bg);
-           mHaloBg.getBackground().setColorFilter(ColorFilterMaker.
-                   changeColorAlpha(mCircleColor, .32f, 0f));
+        // Ring
+        mHaloBg.setBackgroundResource(R.drawable.halo_bg);
+        mHaloBg.getBackground().setColorFilter(ColorFilterMaker.
+                changeColorAlpha(mCircleColor, .32f, 0f));
 
-           // Speech bubbles
-           mHaloTextViewL.setBackgroundResource(R.drawable.bubble_l);
-           mHaloTextViewL.getBackground().setColorFilter(ColorFilterMaker.
-                    changeColorAlpha(mBubbleColor, .32f, 0f));
-           mHaloTextViewL.setTextColor(mTextColor);
-           mHaloTextViewR.setBackgroundResource(R.drawable.bubble_r);
-           mHaloTextViewR.getBackground().setColorFilter(ColorFilterMaker.
-                    changeColorAlpha(mBubbleColor, .32f, 0f));
-           mHaloTextViewR.setTextColor(mTextColor);
-        }
+        // Speech bubbles
+        mHaloTextViewL.setBackgroundResource(R.drawable.bubble_l);
+        mHaloTextViewL.getBackground().setColorFilter(ColorFilterMaker.
+                changeColorAlpha(mBubbleColor, .32f, 0f));
+        mHaloTextViewL.setTextColor(mTextColor);
+        mHaloTextViewL.setAlpha(0f);
+        mHaloTextViewR.setBackgroundResource(R.drawable.bubble_r);
+        mHaloTextViewR.getBackground().setColorFilter(ColorFilterMaker.
+                changeColorAlpha(mBubbleColor, .32f, 0f));
+        mHaloTextViewR.setTextColor(mTextColor);
+        mHaloTextViewR.setAlpha(0f);
     }
 }
