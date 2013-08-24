@@ -122,7 +122,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
     private Context mContext;
     private PackageManager mPm;
-
     private Handler mHandler;
     private BaseStatusBar mBar;
     private WindowManager mWindowManager;
@@ -153,7 +152,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
 
     private boolean mAttached = false;
     private boolean isBeingDragged = false;
-    private boolean mAttached = false;
     private boolean mHapticFeedback;
     private boolean mHideTicker;
     private boolean mEnableColor;
@@ -178,7 +176,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
     SharedPreferences preferences;
     private String KEY_HALO_POSITION_Y = "halo_position_y";
     private String KEY_HALO_POSITION_X = "halo_position_x";
-
 
 
     private final class SettingsObserver extends ContentObserver {
@@ -301,28 +298,6 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
               PixelFormat.TRANSLUCENT);
         lp.gravity = Gravity.LEFT|Gravity.TOP;
         mWindowManager.addView(mEffect, lp);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-
-        if (!mAttached) {
-            mAttached = true;
-            mSettingsObserver = new SettingsObserver(new Handler());
-            mSettingsObserver.observe();
-            mSettingsObserver.onChange(true);
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        if (mAttached) {
-            mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
-            mAttached = false;
-        }
     }
 
     private void initControl() {
