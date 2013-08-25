@@ -67,7 +67,6 @@ import android.provider.Settings;
 import android.service.notification.INotificationListener;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.ExtendedPropertiesUtils;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -79,6 +78,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.TranslateAnimation;
 import android.animation.TimeInterpolator;
 import android.view.Display;
+import android.view.DisplayInfo;
 import android.view.View;
 import android.view.Gravity;
 import android.view.GestureDetector;
@@ -460,7 +460,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         } catch (android.os.RemoteException ex) {
             // failed to register listener
         }
-        if(ExtendedPropertiesUtils.isTablet()) {
+        if(isTablet()) {
             if (mBar.getTabletTicker() != null) mBar.getTabletTicker().setUpdateEvent(this);
         } else {
             if (mBar.getTicker() != null) mBar.getTicker().setUpdateEvent(this);
@@ -874,7 +874,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
         mEffect.unscheduleSleep();
         mHandler.removeCallbacksAndMessages(null);
         // Kill callback
-        if(ExtendedPropertiesUtils.isTablet()) {
+        if(isTablet()) {
             if (mBar.getTabletTicker() != null) mBar.getTabletTicker().setUpdateEvent(null);
         } else {
              mBar.getTicker().setUpdateEvent(null);
@@ -1508,6 +1508,20 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback, TabletTi
             if (hide) ignore++;
         }
         return ignore;
+    }
+
+    private boolean isTablet() {
+        DisplayInfo outDisplayInfo = new DisplayInfo();
+        mWindowManager.getDefaultDisplay().getDisplayInfo(outDisplayInfo);
+        int shortSize = Math.min(outDisplayInfo.logicalHeight, outDisplayInfo.logicalWidth);
+        int shortSizeDp = shortSize * DisplayMetrics.DENSITY_DEFAULT / outDisplayInfo.logicalDensityDpi;
+        if (shortSizeDp > 719) {
+            // > 719dp: tablet
+            return true;
+        } else {
+            // < 720dp: phone/hybrid
+            return false;
+        }
     }
 
     private class HaloReceiver extends INotificationListener.Stub {

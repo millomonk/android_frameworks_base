@@ -39,6 +39,7 @@ import android.app.ActivityOptions;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.app.Notification;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
