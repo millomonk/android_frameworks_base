@@ -296,7 +296,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         mItems = new ArrayList<Action>();
         mEnableFastPowerOn = Settings.System.getInt(
                                 mContext.getContentResolver(),
-                                Settings.System.ENABLE_FAST_POWERON, 1) == 1;
+                                Settings.System.ENABLE_FAST_POWERON, 0) == 1;
         if (mEnableFastPowerOn) {
             // add: fastboot
             mItems.add(
