@@ -371,7 +371,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     InputChannel mPointerLocationInputChannel;
 
     private final class ShowStatusBarGestureReceiver extends InputEventReceiver {
-        private static final int STATUS_BAR_HIDE_DELAY = 2000; // 2 sec
         private static final float MIN_VELOCITY = 450; // 450 dp/sec
         private static final float MIN_DISTANCE = 120; // 120 dp
 
@@ -430,8 +429,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             mStatusBarShownDueToGesture = true;
                             changed = true;
                             mHandler.removeMessages(MSG_HIDE_STATUS_BAR);
-                            mHandler.sendEmptyMessageDelayed(
-                                    MSG_HIDE_STATUS_BAR, STATUS_BAR_HIDE_DELAY);
+                            mHandler.sendEmptyMessageDelayed(MSG_HIDE_STATUS_BAR,
+                                    (Settings.System.getInt(mContext.getContentResolver(),
+                                            Settings.System.FULLSCREEN_STATUSBAR_TIMEOUT, 2500)));
                             mVelocity.clear();
                             mIsTracking = false;
                         } else {
@@ -444,7 +444,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         } else if (m.getY() <= mStatusBarHeight) {
                             mHandler.removeMessages(MSG_HIDE_STATUS_BAR);
                             mHandler.sendEmptyMessageDelayed(MSG_HIDE_STATUS_BAR,
-                                    STATUS_BAR_HIDE_DELAY);
+                                    (Settings.System.getInt(mContext.getContentResolver(),
+                                            Settings.System.FULLSCREEN_STATUSBAR_TIMEOUT, 2500)));
                         }
                     }
                     break;
@@ -457,15 +458,17 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                             mStatusBarShownDueToGesture = true;
                             changed = true;
                             mHandler.removeMessages(MSG_HIDE_STATUS_BAR);
-                            mHandler.sendEmptyMessageDelayed(
-                                    MSG_HIDE_STATUS_BAR, STATUS_BAR_HIDE_DELAY);
+                            mHandler.sendEmptyMessageDelayed(MSG_HIDE_STATUS_BAR,
+                                    (Settings.System.getInt(mContext.getContentResolver(),
+                                            Settings.System.FULLSCREEN_STATUSBAR_TIMEOUT, 2500)));
                         }
                         mVelocity.clear();
                         mIsTracking = false;
                     } else if (m.getY() <= mStatusBarHeight) {
                         mHandler.removeMessages(MSG_HIDE_STATUS_BAR);
-                        mHandler.sendEmptyMessageDelayed(
-                                MSG_HIDE_STATUS_BAR, STATUS_BAR_HIDE_DELAY);
+                        mHandler.sendEmptyMessageDelayed(MSG_HIDE_STATUS_BAR,
+                                (Settings.System.getInt(mContext.getContentResolver(),
+                                        Settings.System.FULLSCREEN_STATUSBAR_TIMEOUT, 2500)));
                     }
                     break;
             }
