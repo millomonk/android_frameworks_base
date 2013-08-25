@@ -17,13 +17,15 @@
 package com.android.systemui.statusbar.halo;
 
 import android.os.Handler;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.ColorFilter;
+import android.graphics.ColorFilterMaker;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -35,6 +37,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
+import android.util.Log;
 import android.util.TypedValue;
 import android.provider.Settings;
 
@@ -106,10 +109,14 @@ public class HaloProperties extends FrameLayout {
 
     private boolean mLastContentStateLeft = true;
 
+    Handler mHandler;
+
     CustomObjectAnimator mHaloOverlayAnimator;
 
     public HaloProperties(Context context) {
         super(context);
+
+        mInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         mHaloDismiss = mContext.getResources().getDrawable(R.drawable.halo_dismiss);
         mHaloBackL = mContext.getResources().getDrawable(R.drawable.halo_back_left);
@@ -129,8 +136,6 @@ public class HaloProperties extends FrameLayout {
         mHaloIconPersistent = mContext.getResources().getDrawable(R.drawable.halo_system_message);
         mHaloIconPinned = mContext.getResources().getDrawable(R.drawable.halo_pinned_app);
 
-        mInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         mHaloBubble = mInflater.inflate(R.layout.halo_bubble, null);
         mHaloBg = (ImageView) mHaloBubble.findViewById(R.id.halo_bg);
         mHaloIcon = (ImageView) mHaloBubble.findViewById(R.id.app_icon);
@@ -140,7 +145,8 @@ public class HaloProperties extends FrameLayout {
         mHaloTickerWrapper = mHaloContentView.findViewById(R.id.ticker_wrapper);
         mHaloTickerContent = mHaloContentView.findViewById(R.id.ticker);
         mHaloTextView = (TextView) mHaloContentView.findViewById(R.id.bubble);
-        mHaloTextView.setAlpha(1f);
+
+        updateColorView();
 
         mHaloNumberView = mInflater.inflate(R.layout.halo_number, null);
         mHaloNumberContainer = (RelativeLayout)mHaloNumberView.findViewById(R.id.container);
@@ -155,6 +161,10 @@ public class HaloProperties extends FrameLayout {
         setHaloSize(mFraction);
 
         mHaloOverlayAnimator = new CustomObjectAnimator(this);
+
+        mHandler = new Handler();
+        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
+        settingsObserver.observe();
     }
 
     int newPaddingHShort;
@@ -400,5 +410,42 @@ public class HaloProperties extends FrameLayout {
         mHaloNumberView.layout(0, 0, 0, 0);
 
         mLastContentStateLeft = contentLeft;
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_CIRCLE_COLOR), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.HALO_BUBBLE_TEXT_COLOR), false, this);
+            updateColorView();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateColorView();
+        }
+    }
+
+    private void updateColorView() {
+        ContentResolver cr = mContext.getContentResolver();
+        int mCircleColor = Settings.System.getInt(cr,
+               Settings.System.HALO_CIRCLE_COLOR, 0xFF33B5E5);
+        int mTextColor = Settings.System.getInt(cr, 
+               Settings.System.HALO_BUBBLE_TEXT_COLOR, 0xFFFFFFFF);
+
+        // Ring
+        mHaloBg.setBackgroundResource(R.drawable.halo_bg);
+        mHaloBg.getBackground().setColorFilter(ColorFilterMaker.
+                changeColorAlpha(mCircleColor, .32f, 0f));
+
+        mHaloTextView.setTextColor(mTextColor);
+        mHaloTextView.setAlpha(1f);
     }
 }
