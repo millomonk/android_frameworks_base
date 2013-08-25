@@ -365,11 +365,11 @@ class ServiceRecord extends Binder {
             final Notification localForegroundNoti = foregroundNoti;
             ams.mHandler.post(new Runnable() {
                 public void run() {
-                    NotificationManager nm = NotificationManager.from(ams.mContext);
+                    NotificationManagerService nm =
+                            (NotificationManagerService) NotificationManager.getService();
                     if (nm == null) {
                         return;
                     }
-
                     try {
                         if (localForegroundNoti.icon == 0) {
                             // It is not correct for the caller to supply a notification
@@ -416,7 +416,10 @@ class ServiceRecord extends Binder {
                             // being foreground.
                             throw new RuntimeException("icon must be non-zero");
                         }
-                        nm.notify(localForegroundId, localForegroundNoti);
+                        int[] outId = new int[1];
+                        nm.enqueueNotificationInternal(localPackageName, localPackageName,
+                                appUid, appPid, null, localForegroundId, localForegroundNoti,
+                                outId, userId);
                     } catch (RuntimeException e) {
                         Slog.w(ActivityManagerService.TAG,
                                 "Error showing notification for service", e);
