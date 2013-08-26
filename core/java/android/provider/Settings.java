@@ -2841,13 +2841,6 @@ public final class Settings {
         public static final String QS_QUICK_PULLDOWN = "qs_quick_pulldown";
 
         /**
-         * Quick Settings Quick Pulldown
-         *
-         * @hide
-         */
-        public static final String QS_QUICK_PULLDOWN = "qs_quick_pulldown";
-
-        /**
          * Quick Settings Collapse Pane
          *
          * @hide
@@ -2873,7 +2866,6 @@ public final class Settings {
          *
          * @hide
          */
->>>>>>> head
         public static final String QUICK_SETTINGS_RIBBON_TILES = "quick_settings__ribbon_tiles";
 
         /**
