@@ -484,10 +484,10 @@ public class PhoneStatusBar extends BaseStatusBar {
                         mQuickAccessLayoutLinked ? Settings.System.QUICK_SETTINGS_TILES
                             : Settings.System.QUICK_SETTINGS_RIBBON_TILES);
                 mRibbonQS.hideLiveTiles(true);
+                mRibbonQS.hideLiveTileLabels(true);
                 mRibbonQS.setService(this);
                 mRibbonQS.setBar(mStatusBarView);
                 mRibbonQS.setupQuickSettings();
-                mRibbonQS.setTileTitleVisibility(false);
             }
         }
     }
@@ -3239,6 +3239,9 @@ public class PhoneStatusBar extends BaseStatusBar {
                     mRibbonView.setVisibility(View.VISIBLE);
             } else if (mSettingsContainer != null) {
                 mQS.setupQuickSettings();
+                if (mQuickAccessLayoutLinked && mRibbonQS != null) {
+                    mRibbonQS.setupQuickSettings();
+                }
             }
         }
 
