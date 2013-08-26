@@ -107,7 +107,4 @@
     <string name="service_free_mem"><xliff:g id="memory">%1$s</xliff:g> free</string>
     <!-- [CHAR LIMIT=10] Running services, summary of foreground processes -->
     <string name="service_used_mem"><xliff:g id="memory">%1$s</xliff:g> used</string>  
-
-    <!-- Label in drop down to identify brightness slider -->
-    <string name="brightness_label">Brightness</string> 
 </resources>
