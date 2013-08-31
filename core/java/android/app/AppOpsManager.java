@@ -102,7 +102,9 @@ public class AppOpsManager {
     public static final int OP_WRITE_CLIPBOARD = 30;
     /** @hide */
     public static final int OP_WIFI_CHANGE = 31;
-    public static final int _NUM_OP = 32;
+    public static final int OP_BLUETOOTH_CHANGE = 32;
+    public static final int OP_DATA_CONNECT_CHANGE = 33;
+    public static final int _NUM_OP = 34;
 
     /**
      * Map to check if each operation is strict or not, to determine default
@@ -143,6 +145,8 @@ public class AppOpsManager {
         false,  //OP_READ_CLIPBOARD
         false,  //OP_WRITE_CLIPBOARD
         true,   //OP_WIFI_CHANGE
+        true,   //OP_BLUETOOTH_CHANGE
+        true,   //OP_DATA_CONNECT_CHANGE
     };
 
     /**
@@ -186,6 +190,8 @@ public class AppOpsManager {
             OP_READ_CLIPBOARD,
             OP_WRITE_CLIPBOARD,
             OP_WIFI_CHANGE,
+            OP_BLUETOOTH_CHANGE,
+            OP_DATA_CONNECT_CHANGE,
     };
 
     /**
@@ -225,6 +231,8 @@ public class AppOpsManager {
             "READ_CLIPBOARD",
             "WRITE_CLIPBOARD",
             "WIFI_CHANGE",
+            "BLUETOOTH_CHANGE",
+            "DATA_CONNECT_CHANGE",
     };
 
     /**
@@ -264,6 +272,8 @@ public class AppOpsManager {
             null, // no permission for reading clipboard
             null, // no permission for writing clipboard
             android.Manifest.permission.CHANGE_WIFI_STATE,
+            android.Manifest.permission.BLUETOOTH,
+            android.Manifest.permission.CHANGE_NETWORK_STATE,
     };
 
     /**
