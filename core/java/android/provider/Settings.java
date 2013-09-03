@@ -2966,6 +2966,13 @@ public final class Settings {
         public static final String FULLSCREEN_STATUSBAR_TIMEOUT = "fullscreen_statusbar_timeout";
 
         /**
+         * Quick Settings Number of Columns
+         *
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_COLUMNS = "quick_settings_columns";
+
+        /**
          * Display style of AM/PM next to clock in status bar
          * 0: Normal display (Eclair stock)
          * 1: Small display (Froyo stock)

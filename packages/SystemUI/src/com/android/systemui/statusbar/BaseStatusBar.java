@@ -48,6 +48,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
@@ -282,11 +283,18 @@ public abstract class BaseStatusBar extends SystemUI implements
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.STATUS_BAR_COLLAPSE_ON_DISMISS), false, this);
+
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QUICK_SETTINGS_COLUMNS), false, this,
+                    UserHandle.USER_ALL);
             update();
         }
 
         @Override
-        public void onChange(boolean selfChange) {
+        public void onChange(boolean selfChange, Uri uri) {
+            if (uri.equals(Settings.System.getUriFor(Settings.System.QUICK_SETTINGS_COLUMNS))) {
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
             update();
         }
 
@@ -1587,7 +1595,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
 
         @Override
-       public void onChange(boolean selfChange) {
+        public void onChange(boolean selfChange) {
             update();
         }
 
