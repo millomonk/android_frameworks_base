@@ -1574,6 +1574,30 @@ public abstract class BaseStatusBar extends SystemUI implements
         return km.inKeyguardRestrictedInputMode();
     }
 
+    private static class SettingsObserver extends ContentObserver {
+        private Handler mHandler;
+
+        SettingsObserver(Handler handler) {
+            super(handler);
+            mHandler = handler;
+        }
+
+        void observe(Context context) {
+            ContentResolver resolver = context.getContentResolver();
+
+        resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.QUICK_SETTINGS_COLUMNS), false, this,
+                    UserHandle.USER_ALL);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            if (uri.equals(Settings.System.getUriFor(Settings.System.QUICK_SETTINGS_COLUMNS))) {
+            	android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        }
+    }
+
     class SidebarObserver extends ContentObserver {
         SidebarObserver(Handler handler) {
             super(handler);
