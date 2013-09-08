@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.media.ExifInterface;
@@ -391,7 +392,6 @@ public class CameraTile extends QuickSettingsTile {
 
     private class Storage {
         private static final String TAG = "CameraStorage";
-        private String mRoot = Environment.getExternalStorageDirectory().toString();
         private Storage() {}
 
         public String writeFile(String title, byte[] data) {
@@ -479,6 +479,19 @@ public class CameraTile extends QuickSettingsTile {
         }
 
         private String generateDCIM() {
+            String mRoot;
+            try {
+                Context cameraContext = mContext.createPackageContext("com.android.gallery3d", 0);
+                SharedPreferences cameraPrefs = cameraContext.getSharedPreferences(
+                        cameraContext.getPackageName() + "_preferences_camera",
+                        Context.MODE_PRIVATE);
+                mRoot = cameraPrefs.getString("pref_camera_storage_key",
+                        Environment.getExternalStorageDirectory().toString());
+            } catch (PackageManager.NameNotFoundException ex) {
+                Log.e(TAG, "Storage path", ex);
+            }
+            Log.v(TAG, mRoot);
+
             return new File(mRoot, Environment.DIRECTORY_DCIM).toString();
         }
 
