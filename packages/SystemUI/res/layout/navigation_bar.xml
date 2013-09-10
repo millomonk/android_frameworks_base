@@ -36,6 +36,7 @@
             android:layout_width="match_parent">
 
             <com.android.systemui.statusbar.policy.BatteryBarController
+                android:id="@+id/battery_bar_top"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:visibility="gone"
@@ -43,6 +44,7 @@
                 android:layout_alignParentTop="true" />
 
             <com.android.systemui.statusbar.policy.BatteryBarController
+                android:id="@+id/battery_bar_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:visibility="gone"
@@ -153,6 +155,7 @@
             android:layout_width="match_parent">
 
             <com.android.systemui.statusbar.policy.BatteryBarController
+                android:id="@+id/battery_bar_landleft"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -162,6 +165,7 @@
                 android:rotation="180" />
 
             <com.android.systemui.statusbar.policy.BatteryBarController
+                android:id="@+id/battery_bar_landright"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"

@@ -2472,6 +2472,11 @@ public class PhoneStatusBar extends BaseStatusBar {
             final View dockBattery = mStatusBarView.findViewById(R.id.dock_battery);
             final View dockBattery2 = mStatusBarView.findViewById(R.id.dock_battery_text);
             final View dockBattery3 = mStatusBarView.findViewById(R.id.circle_dock_battery);
+            final View batterybar = mStatusBarView.findViewById(R.id.battery_bar);
+            final View batterybar_top = mNavigationBarView.findViewById(R.id.battery_bar_top);
+            final View batterybar_bottom = mNavigationBarView.findViewById(R.id.battery_bar_bottom);
+            final View batterybar_landleft = mNavigationBarView.findViewById(R.id.battery_bar_landleft);
+            final View batterybar_landright = mNavigationBarView.findViewById(R.id.battery_bar_landright);
             final View clock = mStatusBarView.findViewById(R.id.clock);
             final View cclock = mStatusBarView.findViewById(R.id.center_clock);
             final View traffic = mStatusBarView.findViewById(R.id.traffic);
@@ -2500,6 +2505,21 @@ public class PhoneStatusBar extends BaseStatusBar {
             if (cclock != null) {
                 lightsOutObjs.add(ObjectAnimator.ofFloat(cclock, View.ALPHA, 0.5f));
             }
+            if (batterybar != null) {
+                lightsOutObjs.add(ObjectAnimator.ofFloat(batterybar, View.ALPHA, 0.5f));
+            }
+            if (batterybar_top != null) {
+                lightsOutObjs.add(ObjectAnimator.ofFloat(batterybar_top, View.ALPHA, 0.5f));
+            }
+            if (batterybar_bottom != null) {
+                lightsOutObjs.add(ObjectAnimator.ofFloat(batterybar_bottom, View.ALPHA, 0.5f));
+            }
+            if (batterybar_landleft != null) {
+                lightsOutObjs.add(ObjectAnimator.ofFloat(batterybar_landleft, View.ALPHA, 0.5f));
+            }
+            if (batterybar_landright != null) {
+                lightsOutObjs.add(ObjectAnimator.ofFloat(batterybar_landright, View.ALPHA, 0.5f));
+            }
 
             List<ObjectAnimator> lightsOnObjs = new ArrayList<ObjectAnimator>();
             lightsOnObjs.add(ObjectAnimator.ofFloat(notifications, View.ALPHA, 1));
@@ -2524,6 +2544,21 @@ public class PhoneStatusBar extends BaseStatusBar {
             }
             if (cclock != null) {
                 lightsOnObjs.add(ObjectAnimator.ofFloat(cclock, View.ALPHA, 1));
+            }
+            if (batterybar != null) {
+                lightsOnObjs.add(ObjectAnimator.ofFloat(batterybar, View.ALPHA, 1));
+            }
+            if (batterybar_top != null) {
+                lightsOnObjs.add(ObjectAnimator.ofFloat(batterybar_top, View.ALPHA, 1));
+            }
+            if (batterybar_bottom != null) {
+                lightsOnObjs.add(ObjectAnimator.ofFloat(batterybar_bottom, View.ALPHA, 1));
+            }
+            if (batterybar_landleft != null) {
+                lightsOnObjs.add(ObjectAnimator.ofFloat(batterybar_landleft, View.ALPHA, 1));
+            }
+            if (batterybar_landright != null) {
+                lightsOnObjs.add(ObjectAnimator.ofFloat(batterybar_landright, View.ALPHA, 1));
             }
 
             final AnimatorSet lightsOutAnim = new AnimatorSet();
