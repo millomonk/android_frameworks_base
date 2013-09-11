@@ -279,6 +279,12 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                     R.drawable.ic_lockscreen_target_activated);
             final InsetDrawable activeBack = new InsetDrawable(blankActiveDrawable, 0, 0, 0, 0);
 
+            // Magnetic target replacement
+            final Drawable blankInActiveDrawable = res.getDrawable(
+                    com.android.internal.R.drawable.ic_lockscreen_lock_pressed);
+            final Drawable unlockActiveDrawable = res.getDrawable(
+                    com.android.internal.R.drawable.ic_lockscreen_unlock_activated);
+
             // Shift targets for landscape lockscreen on phones
             for (int i = 0; i < mTargetOffset; i++) {
                 storedDrawables.add(new TargetDrawable(res, null));
@@ -295,7 +301,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                 }
 
                 String uri = mStoredTargets[i];
-                /* Try to get rid of magnetic targets
                 if (uri.equals(GlowPadView.EMPTY_TARGET)) {
                     Drawable d = LockscreenTargetUtils.getLayeredDrawable(
                             mContext, unlockActiveDrawable, blankInActiveDrawable,
@@ -303,7 +308,6 @@ public class KeyguardSelectorView extends LinearLayout implements KeyguardSecuri
                     storedDrawables.add(new TargetDrawable(res, d));
                     continue;
                 }
-                */
 
                 try {
                     Intent intent = Intent.parseUri(uri, 0);
