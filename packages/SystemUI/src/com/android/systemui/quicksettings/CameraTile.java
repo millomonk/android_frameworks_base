@@ -479,7 +479,7 @@ public class CameraTile extends QuickSettingsTile {
         }
 
         private String generateDCIM() {
-            String mRoot;
+            String mRoot = null;
             try {
                 Context cameraContext = mContext.createPackageContext("com.android.gallery3d", 0);
                 SharedPreferences cameraPrefs = cameraContext.getSharedPreferences(
