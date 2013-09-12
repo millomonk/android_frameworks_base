@@ -61,10 +61,11 @@ public class QuickSettingsContainerView extends FrameLayout {
     void updateResources() {
         Resources r = getContext().getResources();
         mCellGap = r.getDimension(R.dimen.quick_settings_cell_gap);
-        boolean iSlandscape =
-                getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-        mNumColumns = iSlandscape ? 6 : Settings.System.getInt(getContext().getContentResolver(),
+        mNumColumns = Settings.System.getInt(getContext().getContentResolver(),
                 Settings.System.QUICK_SETTINGS_COLUMNS, 3);
+        if (isLandscape()) {
+            mNumColumns = mNumColumns * 2;
+        }
         requestLayout();
     }
 
@@ -99,6 +100,10 @@ public class QuickSettingsContainerView extends FrameLayout {
                 int colSpan = v.getColumnSpan();
                 lp.width = (int) ((colSpan * cellWidth) + (colSpan - 1) * cellGap);
                 lp.height = cellHeight;
+
+                if (((mNumColumns > 3) && !isLandscape()) || ((mNumColumns > 6) && isLandscape())) {
+                    lp.height = (lp.width * mNumColumns - 1) / mNumColumns;
+                }
 
                 // Measure the child
                 int newWidthSpec = MeasureSpec.makeMeasureSpec(lp.width, MeasureSpec.EXACTLY);
@@ -177,5 +182,11 @@ public class QuickSettingsContainerView extends FrameLayout {
                 }
             }
         }
+    }
+
+    private boolean isLandscape() {
+        final boolean isLandscape =
+            getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        return isLandscape;
     }
 }
