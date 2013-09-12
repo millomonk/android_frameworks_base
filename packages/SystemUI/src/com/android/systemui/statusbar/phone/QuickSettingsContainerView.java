@@ -61,10 +61,14 @@ public class QuickSettingsContainerView extends FrameLayout {
     void updateResources() {
         Resources r = getContext().getResources();
         mCellGap = r.getDimension(R.dimen.quick_settings_cell_gap);
+        
+        //Default for portrait is 3, for landscape 6.
+        //When 5 is set for portrait, which is two more than default,
+        //use 8 on landscape mode, which is also two more than default.  
         mNumColumns = Settings.System.getInt(getContext().getContentResolver(),
                 Settings.System.QUICK_SETTINGS_COLUMNS, 3);
         if (isLandscape()) {
-            mNumColumns = mNumColumns * 2;
+            mNumColumns = 6 + (mNumColumns - 3);
         }
         requestLayout();
     }
