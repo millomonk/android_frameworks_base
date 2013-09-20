@@ -642,12 +642,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             // no window manager? good luck with that
         }
 
-        if (mRecreating) {
-            removeSidebarView();
-        } else {
-            addActiveDisplayView();
-        }
-
+        addActiveDisplayView();
         addSidebarView();
 
         // figure out which pixel-format to use for the status bar.
