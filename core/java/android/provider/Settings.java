@@ -3897,8 +3897,8 @@ public final class Settings {
         public static final String STATUS_BAR_AUTO_UNHIDE = "status_bar_auto_unhide";
 
         /**
-         * Choose side for Clear button on Recents window
-         * 0 = left, 1 = right
+         * Choose position of Clear button on Recents window
+         * 0 = disabled, 1 = bottom right, 2 = bottom left, 3 = top right, 4 = top left
          * @hide
          */
         public static final String CLEAR_RECENTS_POSITION = "clear_recents_position"; 
