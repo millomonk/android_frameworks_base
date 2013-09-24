@@ -319,12 +319,6 @@ public class ActiveDisplayView extends FrameLayout {
             if (!mDisplayNotifications || mRedisplayTimeout <= 0) {
                 cancelRedisplayTimer();
             }
-
-            if (mDisplayNotifications && mPocketModeEnabled) {
-                registerSensorListener();
-            } else {
-                unregisterSensorListener();
-            }
         }
     }
 
@@ -758,14 +752,8 @@ public class ActiveDisplayView extends FrameLayout {
     }
 
     private void registerSensorListener() {
-        if (mProximitySensor != null) {
-            if (mPocketModeEnabled) {
-                mSensorManager.registerListener(mSensorListener, mProximitySensor,
-                        SensorManager.SENSOR_DELAY_UI);
-            } else {
-                mSensorManager.unregisterListener(mSensorListener, mProximitySensor);
-            }
-        }
+        if (mProximitySensor != null)
+            mSensorManager.registerListener(mSensorListener, mProximitySensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     private void unregisterSensorListener() {
