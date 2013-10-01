@@ -18,6 +18,7 @@
     <string name="accessibility_data_connection_DC">DCHSPAP</string>
     <string name="quick_settings_profile_label">Profile</string>
     <string name="powerwidget_screen_timeout_toast">Bildschirmsperre nach: %1$d %2$s</string>
+    <string name="powerwidget_screen_timeout_never_toast">Bildschirm immer an</string>
     <string name="quick_settings_gps">GPS</string>
     <string name="quick_settings_gps_off">GPS aus</string>
     <string name="quick_settings_screen_sleep">Standby</string>
@@ -38,6 +39,7 @@
     <string name="quick_settings_nfc">NFC</string>
     <string name="quick_settings_nfc_off">NFC aus</string>
     <string name="quick_settings_screen_timeout">Timeout</string>
+    <string name="quick_settings_screen_timeout_summary_never">Nie</string>
     <string name="quick_settings_usb_tether_off_label">Getrennt</string>
     <string name="quick_settings_usb_tether_connected_label">Tethering aus</string>
     <string name="quick_settings_usb_tether_on_label">Tethering</string>
