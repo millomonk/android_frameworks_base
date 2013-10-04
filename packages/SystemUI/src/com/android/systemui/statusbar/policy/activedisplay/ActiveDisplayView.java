@@ -195,7 +195,6 @@ public class ActiveDisplayView extends FrameLayout {
             if (target == UNLOCK_TARGET) {
                 mWakedByPocketMode = false;
                 disableProximitySensor();
-                mBar.disable(0);
                 mNotification = null;
                 hideNotificationView();
                 if (!mKeyguardManager.isKeyguardSecure()) {
@@ -212,7 +211,6 @@ public class ActiveDisplayView extends FrameLayout {
             } else if (target == OPEN_APP_TARGET) {
                 mWakedByPocketMode = false;
                 disableProximitySensor();
-                mBar.disable(0);
                 hideNotificationView();
                 if (!mKeyguardManager.isKeyguardSecure()) {
                     try {
@@ -629,6 +627,7 @@ public class ActiveDisplayView extends FrameLayout {
         setVisibility(View.GONE);
         restoreBrightness();
         mWakedByPocketMode = false;
+        mBar.disable(0);
         cancelTimeoutTimer();
         unregisterSensorListener(mLightSensor);
     }
@@ -679,7 +678,6 @@ public class ActiveDisplayView extends FrameLayout {
 
     private void onScreenTurnedOff() {
         mWakedByPocketMode = false;
-        mBar.disable(0);
         hideNotificationView();
         cancelTimeoutTimer();
         if (mRedisplayTimeout > 0) updateRedisplayTimer();
