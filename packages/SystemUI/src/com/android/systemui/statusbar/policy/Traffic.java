@@ -54,10 +54,6 @@ public class Traffic extends TextView {
             updateSettings();
         }
 
-        @Override
-        public void onChange(boolean selfChange) {
-            updateSettings();
-        }
     }
 
     public Traffic(Context context) {

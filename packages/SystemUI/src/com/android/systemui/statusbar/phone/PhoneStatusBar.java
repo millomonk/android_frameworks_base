@@ -441,9 +441,6 @@ public class PhoneStatusBar extends BaseStatusBar {
 	    if (mCarrierLabel != null) {
                 toggleCarrierAndWifiLabelVisibility();
             }
-            if (mNotificationData != null) {
-                updateStatusBarVisibility();
-            }
 
             showClock(true);
         }
