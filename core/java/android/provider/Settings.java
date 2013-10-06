@@ -3198,6 +3198,12 @@ public final class Settings {
         public static final String STATUS_BAR_TRAFFIC_COLOR = "status_bar_traffic_color"; 
 
         /**
+         * Show summary of traffic.
+         * @hide
+         */
+        public static final String STATUS_BAR_TRAFFIC_SUMMARY = "status_bar_traffic_summary";
+
+        /**
          * Sets the portrait background of notification drawer
          * @hide
          */
