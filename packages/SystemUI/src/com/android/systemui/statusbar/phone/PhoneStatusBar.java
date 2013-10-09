@@ -438,7 +438,7 @@ public class PhoneStatusBar extends BaseStatusBar {
             mNotificationShortcutsIsActive = !(notificationShortcutsIsActive == null
                     || notificationShortcutsIsActive.isEmpty());
             
-	    if (mCarrierLabel != null) {
+            if (mCarrierLabel != null) {
                 toggleCarrierAndWifiLabelVisibility();
             }
 
