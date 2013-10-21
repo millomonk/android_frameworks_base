@@ -23,7 +23,7 @@ public class ScreenTimeoutTile extends QuickSettingsTile {
     private static final int SCREEN_TIMEOUT_LOW    =  30000;
     private static final int SCREEN_TIMEOUT_NORMAL =  60000;
     private static final int SCREEN_TIMEOUT_HIGH   = 120000;
-    private static final int SCREEN_TIMEOUT_MAX    = 900000;
+    private static final int SCREEN_TIMEOUT_MAX    = 600000;
     private static final int SCREEN_TIMEOUT_NEVER  = Integer.MAX_VALUE;
 
     // cm modes
