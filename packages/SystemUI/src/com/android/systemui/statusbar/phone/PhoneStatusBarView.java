@@ -440,7 +440,7 @@ public class PhoneStatusBarView extends PanelBar {
                 mBar.updateNotificationShortcutsVisibility(false);
             }
         }
-        mBar.updateCarrierAndWifiLabelVisibility(false);
+        mBar.updateCarrierLabelVisibility(false);
     }
 
 }
