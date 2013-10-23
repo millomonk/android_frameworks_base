@@ -594,17 +594,17 @@ public class PhoneStatusBar extends BaseStatusBar {
     }
 
     private void updateCarrierMargin() {
-        lpScrollView.bottomMargin = mNotificationShortcutsIsActive ? mShortcutsDrawerMargin : 0;
-        mScrollView.setLayoutParams(lpScrollView);
+        //lpScrollView.bottomMargin = mNotificationShortcutsIsActive ? mShortcutsDrawerMargin : 0;
+        //mScrollView.setLayoutParams(lpScrollView);
 
-        lpCarrierLabel.bottomMargin = mNotificationShortcutsIsActive ? mShortcutsSpacingHeight : mCloseViewHeight;
+        //lpCarrierLabel.bottomMargin = mNotificationShortcutsIsActive ? mShortcutsSpacingHeight : mCloseViewHeight;
         
-        mCarrierAndWifiView.setLayoutParams(lpCarrierLabel);
+        //mCarrierLabel.setLayoutParams(lpCarrierLabel);
     }
 
     private void toggleCarrierAndWifiLabelVisibility() {
-        updateCarrierMargin(); 
-        mCarrierAndWifiView.setVisibility(mShowCarrierInPanel ? View.VISIBLE : View.INVISIBLE);
+        //updateCarrierMargin(); 
+        //mCarrierLabel.setVisibility(mShowCarrierInPanel ? View.VISIBLE : View.INVISIBLE);
     }
 
     // ================================================================================
