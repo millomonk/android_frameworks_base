@@ -4128,13 +4128,6 @@ public final class Settings {
         public static final String ACTIVITY_RESOLVER_USE_ALT = "activity_resolver_use_alt";
 
         /**
-         * Performance profile
-         * @see config_perf_profile_prop in frameworks/base/core/res/res/values/config.xml
-         * @hide
-         */
-        public static final String PERFORMANCE_PROFILE = "performance_profile";
-
-        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
