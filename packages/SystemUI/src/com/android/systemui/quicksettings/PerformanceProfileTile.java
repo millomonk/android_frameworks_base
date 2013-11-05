@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.net.Uri;
 import android.provider.Settings;
 import android.view.View;
@@ -30,7 +31,7 @@ import com.android.systemui.statusbar.phone.QuickSettingsController;
 public class PerformanceProfileTile extends QuickSettingsTile {
 
     private String[] mEntries;
-    private int[] mDrawables;
+    private TypedArray mTypedArrayDrawables;
     private int mCurrentValue;
 
     private String mPerfProfileDefaultEntry;
@@ -41,12 +42,7 @@ public class PerformanceProfileTile extends QuickSettingsTile {
 
         Resources res = context.getResources();
         mEntries = res.getStringArray(com.android.internal.R.array.perf_profile_entries);
-        String[] drawablesNames = res.getStringArray(R.array.perf_profile_drawables);
-        int count = drawablesNames.length;
-        mDrawables = new int[count];
-        for (int i = 0; i < count; i++) {
-            mDrawables[i] = getDrawableId(drawablesNames[i]);
-        }
+        mTypedArrayDrawables = res.obtainTypedArray(R.array.perf_profile_drawables);
 
         mPerfProfileDefaultEntry = res.getString(
                 com.android.internal.R.string.config_perf_profile_default_entry);
@@ -64,10 +60,6 @@ public class PerformanceProfileTile extends QuickSettingsTile {
                 changeToNextProfile();
             }
         };
-    }
-
-    private int getDrawableId(String name) {
-        return mContext.getResources().getIdentifier(name, "drawable", "com.android.systemui");
     }
 
     @Override
@@ -100,13 +92,9 @@ public class PerformanceProfileTile extends QuickSettingsTile {
 
         int count = mPerfProfileValues.length;
         for (int i = 0; i < count; i++) {
-            try {
-                if (mPerfProfileValues[i].compareTo(perfProfile) == 0) {
-                    mCurrentValue = i;
-                    return;
-                }
-            } catch (IndexOutOfBoundsException ex) {
-                // Ignore
+            if (mPerfProfileValues[i].equals(perfProfile)) {
+                mCurrentValue = i;
+                return;
             }
         }
 
@@ -115,7 +103,7 @@ public class PerformanceProfileTile extends QuickSettingsTile {
     }
 
     private synchronized void updateTile() {
-        mDrawable = mDrawables[mCurrentValue];
+        mDrawable = mTypedArrayDrawables.getResourceId(mCurrentValue, -1);
         mLabel = mEntries[mCurrentValue];
     }
 

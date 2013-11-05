@@ -1938,6 +1938,7 @@
 
   <!-- Hardware Key ReMapping -->
   <java-symbol type="integer" name="config_deviceHardwareKeys" />
+  <java-symbol type="bool" name="config_singleStageCameraKey" />
 
   <!-- Notification and battery light -->
   <java-symbol type="bool" name="config_intrusiveBatteryLed" />
@@ -2109,6 +2110,12 @@
   <!-- Package Manager -->
   <java-symbol type="array" name="config_disabledComponents" />
 
+  <!-- LED flashlight -->
+  <java-symbol type="bool" name="config_enableTorch" />
+
+  <!-- SMS RIL_REQUEST_SEND_SMS_EXPECT_MORE -->
+  <java-symbol type="bool" name="config_smsUseExpectMore" />
+
   <!-- Performance Profiles -->
   <java-symbol type="string" name="config_perf_profile_prop" />
   <java-symbol type="string" name="config_perf_profile_default_entry" />
@@ -2118,9 +2125,4 @@
   <java-symbol type="string" name="perf_profile_bal" />
   <java-symbol type="string" name="perf_profile_perf" />
 
-  <!-- LED flashlight -->
-  <java-symbol type="bool" name="config_enableTorch" />
-
-  <!-- SMS RIL_REQUEST_SEND_SMS_EXPECT_MORE -->
-  <java-symbol type="bool" name="config_smsUseExpectMore" />
 </resources>

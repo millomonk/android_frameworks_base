@@ -131,8 +131,12 @@ class ServerThread extends Thread {
         }
         @Override
         public void onChange(boolean selfChange) {
+            setSystemSetting();
+        }
+
+        void setSystemSetting() {
             String perfProfile = Settings.System.getString(mContentResolver,
-                Settings.System.PERFORMANCE_PROFILE);
+                    Settings.System.PERFORMANCE_PROFILE);
             if (perfProfile == null) {
                 perfProfile = mPropDef;
             }
@@ -916,9 +920,13 @@ class ServerThread extends Thread {
             false, new AdbPortObserver());
         if (!TextUtils.isEmpty(context.getString(
                 com.android.internal.R.string.config_perf_profile_prop))) {
+            PerformanceProfileObserver observer = new PerformanceProfileObserver(context);
             mContentResolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.PERFORMANCE_PROFILE),
-                    false, new PerformanceProfileObserver(context));
+                    false, observer);
+
+            // Sync the system property with the current setting
+            observer.setSystemSetting();
         }
 
         // Before things start rolling, be sure we have decided whether
