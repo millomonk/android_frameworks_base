@@ -444,12 +444,14 @@ public class AppOpsService extends IAppOpsService.Stub {
         HashMap<Callback, ArrayList<Pair<String, Integer>>> callbacks = null;
         synchronized (this) {
             boolean changed = false;
-            for (int i=0; i<mUidOps.size(); i++) {
+            for (int i=mUidOps.size()-1; i>=0; i--) {
                 HashMap<String, Ops> packages = mUidOps.valueAt(i);
-                for (Map.Entry<String, Ops> ent : packages.entrySet()) {
+                Iterator<Map.Entry<String, Ops>> it = packages.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<String, Ops> ent = it.next();
                     String packageName = ent.getKey();
                     Ops pkgOps = ent.getValue();
-                    for (int j=0; j<pkgOps.size(); j++) {
+                    for (int j=pkgOps.size()-1; j>=0; j--) {
                         Op curOp = pkgOps.valueAt(j);
                         if (curOp.mode != curOp.defaultMode) {
                             curOp.mode = curOp.defaultMode;
@@ -458,9 +460,17 @@ public class AppOpsService extends IAppOpsService.Stub {
                                     mOpModeWatchers.get(curOp.op));
                             callbacks = addCallbacks(callbacks, packageName, curOp.op,
                                     mPackageModeWatchers.get(packageName));
-                            pruneOp(curOp, mUidOps.keyAt(i), packageName);
+                            if (curOp.time == 0 && curOp.rejectTime == 0) {
+                                pkgOps.removeAt(j);
+                            }
                         }
                     }
+                    if (pkgOps.size() == 0) {
+                        it.remove();
+                    }
+                }
+                if (packages.size() == 0) {
+                    mUidOps.removeAt(i);
                 }
             }
             if (changed) {
@@ -1057,7 +1067,16 @@ public class AppOpsService extends IAppOpsService.Stub {
 
             String tagName = parser.getName();
             if (tagName.equals("op")) {
-                int code = Integer.parseInt(parser.getAttributeValue(null, "n"));
+                int code = AppOpsManager.OP_NONE;
+                String codeStr = parser.getAttributeValue(null, "n");
+                if (codeStr != null) {
+                    code = Integer.parseInt(codeStr);
+                }
+                /* use op name string if it exists */
+                String codeNameStr = parser.getAttributeValue(null, "ns");
+                if (codeNameStr != null) {
+                    code = AppOpsManager.nameToOp(codeNameStr);
+                }
                 boolean strict = isStrict(code, uid, pkgName);
                 Op op = new Op(code, strict);
                 String mode = parser.getAttributeValue(null, "m");
@@ -1140,6 +1159,7 @@ public class AppOpsService extends IAppOpsService.Stub {
                             AppOpsManager.OpEntry op = ops.get(j);
                             out.startTag(null, "op");
                             out.attribute(null, "n", Integer.toString(op.getOp()));
+                            out.attribute(null, "ns", AppOpsManager.opToName(op.getOp()));
                             out.attribute(null, "m", Integer.toString(op.getMode()));
                             long time = op.getTime();
                             if (time != 0) {
